@@ -1,0 +1,22 @@
+# Build directories
+Debug/
+Release/
+ipch/
+
+# Bloated Windows Databases
+*.sdf
+*.opensdf
+*.suo
+
+# Compiled files
+*.slo
+*.lo
+*.o
+*.obj
+*.exe
+
+# Precompiled Headers
+*.gch
+*.pch
+*.idb
+*.pdb
