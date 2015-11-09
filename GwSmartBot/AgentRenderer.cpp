@@ -1,10 +1,10 @@
 #include "AgentRenderer.h"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
+const float M_PI = 3.14159265358979323846f;
+
 void AgentRenderer::Initialize(IDirect3DDevice9* device) {
-	type_ = D3DPT_TRIANGLELIST;
 	triangles_max = 0x200;
 	vertices_max = triangles_max * 3;
 
@@ -14,110 +14,26 @@ void AgentRenderer::Initialize(IDirect3DDevice9* device) {
 	buffer_->Lock(0, sizeof(Vertex) * vertices_max, (VOID**)&vertices, D3DLOCK_NOOVERWRITE);
 }
 
-void AgentRenderer::Render(IDirect3DDevice9* device) {
+void AgentRenderer::Begin(IDirect3DDevice9* device) {
 	triangle_count = 0;
+	device_ = device;
+}
 
-	GW::AgentArray agents = api().Agents().GetAgentArray();
-	if (!agents.valid()) return;	
-
+void AgentRenderer::RenderAgents(std::vector<AgentPosition> agents) {
 	// all agents
 	for (size_t i = 0; i < agents.size(); ++i) {
-		GW::Agent* agent = agents[i];
-		if (agent == nullptr) continue;
-		if (agent->Id == api().Agents().GetPlayerId()) continue; // will draw player at the end
-		if (agent->Id == api().Agents().GetTargetId()) continue; // will draw target at the end
-
-		QueueAgent(device, agent);
-
-		CheckFlush(device);
-	}
-
-	GW::Agent* target = api().Agents().GetTarget();
-	if (target) QueueAgent(device, target);
-
-	CheckFlush(device);
-
-	GW::Agent* player = api().Agents().GetPlayer();
-	if (player) QueueAgent(device, player);
-
-	Flush(device);
-}
-
-void AgentRenderer::QueueAgent(IDirect3DDevice9* device, GW::Agent* agent) {
-	bool is_target = GWCA::Api().Agents().GetTargetId() == agent->Id;
-	bool is_player = GWCA::Api().Agents().GetPlayerId() == agent->Id;
-
-	DWORD color;
-	if (is_player) {
-		color = D3DCOLOR_XRGB(200, 50, 255);
-	} else if (agent->GetIsDead()) {
-		color = D3DCOLOR_ARGB(150, 20, 20, 20);
-	} else {
-		switch (agent->Type) {
-		case 0x200:
-		case 0x400:
-			color = D3DCOLOR_XRGB(0, 0, 200);
-			break;
-		default:
-			switch (agent->Allegiance) {
-			case 0x100: color = D3DCOLOR_XRGB(0, 200, 0); break;
-			case 0x300: color = D3DCOLOR_XRGB(200, 0, 0); break;
-			default:	color = D3DCOLOR_XRGB(0, 150, 0); break;
-			}
-			break;
-		}
-	}
-
-	float size = 150.0f;
-	switch (agent->TypeMap) {
-	case 0x40000: size = 100.0f; break; // spirit
-	case 0xC00:	size = 200.0f; break;  // boss
-	default:
-		switch (agent->Type) {
-		case 0xDB: // players, npcs
-		case 0x200: // signposts
-			size = 150.0f; 
-			break;
-		case 0x400: // item
-			size = 75.0f;
-			break;
-		default:
-			printf("found no size for agent, id %d\n", agent->Id);
-			break;
-		}
-		break;
-	}
-
-	enum Shape { Tri, Quad };
-	Shape shape;
-	if (agent->TypeMap == 0x40000) { // spirit
-		QueueQuad(device, agent->X, agent->Y, 75, color);
-		shape = Quad;
-	} else {
-		switch (agent->Type) {
-		case 0xDB: shape = Tri; break; // players, npcs
-		case 0x200: shape = Quad; break; // signposts, chests, objects
-		case 0x400: shape = Quad; break; // item on the ground
-		default:
-			printf("Found no shape for agent, id %d\n", agent->Id);
-			break;
-		}
-	}
-
-	switch (shape) {
-	case Tri:
-		if (is_target) QueueTriangle(device, agent->X, agent->Y, agent->Rotation, size + 50, 0xFFFFFFFF);
-		QueueTriangle(device, agent->X, agent->Y, agent->Rotation, size, color);
-		break;
-	case Quad:
-		if (is_target) QueueQuad(device, agent->X, agent->Y, size + 50, 0xFFFFFFFF);
-		QueueQuad(device, agent->X, agent->Y, size, color);
-		break;
+		AgentPosition agent = agents[i];
+		QueueQuad(agent.x, agent.y, 75, D3DCOLOR_XRGB(200, 0, 0));
 	}
 }
 
-void AgentRenderer::QueueTriangle(IDirect3DDevice9* device,
-	float x, float y, float rotation, float size, DWORD color) {
+void AgentRenderer::RenderPlayer(PseudoAgent* player) {
+	//QueueTriangle(player->X, player->Y, player->Rotation, 150, D3DCOLOR_XRGB(0, 200, 0));
+	QueueQuad(player->X, player->Y, 100, D3DCOLOR_XRGB(0, 200, 0));
+}
+
+void AgentRenderer::QueueTriangle(float x, float y, 
+	float rotation, float size, DWORD color) {
 	for (int i = 0; i < 3; ++i) {
 		vertices[i].z = 1.0f;
 		vertices[i].color = color;
@@ -126,18 +42,19 @@ void AgentRenderer::QueueTriangle(IDirect3DDevice9* device,
 	vertices[0].x = x + size * 1.3f * std::cos(rotation);
 	vertices[0].y = y + size * 1.3f * std::sin(rotation);
 
-	vertices[1].x = x + size * std::cos(rotation + (float)M_PI * 2 / 3);
-	vertices[1].y = y + size * std::sin(rotation + (float)M_PI * 2 / 3);
+	vertices[1].x = x + size * std::cos(rotation + M_PI * 2 / 3);
+	vertices[1].y = y - size * std::sin(rotation + M_PI * 2 / 3);
 
-	vertices[2].x = x + size * std::cos(rotation - (float)M_PI * 2 / 3);
-	vertices[2].y = y + size * std::sin(rotation - (float)M_PI * 2 / 3);
+	vertices[2].x = x - size * std::cos(rotation - M_PI * 2 / 3);
+	vertices[2].y = y - size * std::sin(rotation - M_PI * 2 / 3);
 
 	vertices += 3;
 	triangle_count += 1;
+
+	CheckFlush();
 }
 
-void AgentRenderer::QueueQuad(IDirect3DDevice9* device,
-	float x, float y, float size, DWORD color) {
+void AgentRenderer::QueueQuad(float x, float y, float size, DWORD color) {
 
 	for (int i = 0; i < 6; ++i) {
 		vertices[i].z = 1.0f;
@@ -159,12 +76,14 @@ void AgentRenderer::QueueQuad(IDirect3DDevice9* device,
 
 	vertices += 6;
 	triangle_count += 2;
+
+	CheckFlush();
 }
 
-void AgentRenderer::Flush(IDirect3DDevice9* device) {
+void AgentRenderer::Flush() {
 	buffer_->Unlock();
-	device->SetStreamSource(0, buffer_, 0, sizeof(Vertex));
-	device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, triangle_count);
+	device_->SetStreamSource(0, buffer_, 0, sizeof(Vertex));
+	device_->DrawPrimitive(D3DPT_TRIANGLELIST, 0, triangle_count);
 	buffer_->Lock(0, sizeof(Vertex) * vertices_max, (VOID**)&vertices, D3DLOCK_NOOVERWRITE);
 	triangle_count = 0;
 }

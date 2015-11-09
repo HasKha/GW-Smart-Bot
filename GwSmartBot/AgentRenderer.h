@@ -1,24 +1,34 @@
 #pragma once
 
-#include "Renderer.h"
+#include <vector>
+#include <d3d9.h>
 
-class AgentRenderer : public Renderer {
+#include "..\gwcacomm\GWCACppClient\GWCAClient.h"
+
+#include "MyD3DVertex.h"
+
+class AgentRenderer {
 public:
-	void Render(IDirect3DDevice9* device) override;
+	void Initialize(IDirect3DDevice9* device);
+
+	void Begin(IDirect3DDevice9* device);
+	void RenderAgents(std::vector<AgentPosition> agents);
+	void RenderPlayer(PseudoAgent* player);
+	void End() { Flush(); }
 
 private:
-	void Initialize(IDirect3DDevice9* device) override;
-	void QueueAgent(IDirect3DDevice9* device, GWAPI::GW::Agent* agent);
-	void QueueTriangle(IDirect3DDevice9* device, 
-		float x, float y, float rotation, float size, DWORD color);
-	void QueueQuad(IDirect3DDevice9* device,
-		float x, float y, float size, DWORD color);
+	
+	void QueueTriangle(float x, float y, float rotation, float size, DWORD color);
+	void QueueQuad(float x, float y, float size, DWORD color);
 
-	void CheckFlush(IDirect3DDevice9* device) {
-		if (triangle_count > triangles_max - 2) Flush(device);
+	void CheckFlush() {
+		if (triangle_count > triangles_max - 2) Flush();
 	}
-	void Flush(IDirect3DDevice9* device);
 
+	void Flush();
+
+	IDirect3DDevice9* device_;
+	IDirect3DVertexBuffer9* buffer_; // vertex buffer obect
 	Vertex* vertices;			// vertices array
 	unsigned int triangle_count;// count of triangles
 	unsigned int vertices_max;	// max number of vertices to draw in one call

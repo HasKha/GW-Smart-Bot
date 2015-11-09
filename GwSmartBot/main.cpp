@@ -33,12 +33,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	RegisterClassEx(&wc);
 
 	hWnd = CreateWindowEx(NULL, L"WindowClass1", L"GwSmartBot", WS_OVERLAPPEDWINDOW,
-		300, 300, 800, 600,
+		0, 0, 1500, 900,
 		NULL, NULL, hInstance, NULL);
 
 	ShowWindow(hWnd, nCmdShow);
 
+	AllocConsole();
+	FILE* fh;
+	freopen_s(&fh, "CONOUT$", "w", stdout);
+	freopen_s(&fh, "CONOUT$", "w", stderr);
+	SetConsoleTitleA("GwSmartBot Console");
+
 	app = new Application(hWnd);
+	bool connected = app->Connect();
 
 	MSG msg;
 	while (true) {
@@ -49,9 +56,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		if (msg.message == WM_QUIT) break;
 
-		app->Update();
-		app->Render();
+		if (connected) {
+			app->Update();
+			app->Render();
+		}
 	}
 
-	return msg.wParam;
+	app->Disconnect();
+
+	return EXIT_SUCCESS;
 }
