@@ -60,7 +60,7 @@ void Application::HandleInput() {
 void Application::Update() {
 	agents = gwca_.GetAgentsPos();
 	player = gwca_.GetPlayer();
-	bot_.Update(player, agents);
+	bot_.Update(&player, agents);
 	//printf("x %f, y %f\n", player.X, player.Y);
 }
 
@@ -69,7 +69,7 @@ void Application::Render() {
 	pmap_renderer_.Render();
 	agent_renderer_.RenderAgents(agents);
 	agent_renderer_.RenderPlayer(&player);
-	//range_renderer_.Render(player.X, player.Y);
+	range_renderer_.Render(player.X, player.Y);
 	viewer_.RenderEnd();
 }
 

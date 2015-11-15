@@ -6,7 +6,7 @@ class Bot {
 public:
 	Bot(GWCAClient& gwca) : gwca_(gwca) {}
 
-	virtual void Update(PseudoAgent& player, 
+	virtual void Update(PseudoAgent* player, 
 		std::vector<AgentPosition> agents) = 0;
 
 protected:

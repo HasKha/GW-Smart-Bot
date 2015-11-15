@@ -4,34 +4,41 @@
 
 #include "Bot.h"
 
-enum Skill {
-	Paradox,
-	SF,
-	Echo,
-	HoS,
-	Wastrel,
-	Channeling,
-	Shroud,
-	WayOfPerf
-};
-
 class SmartVaettirBot : public Bot {
+	enum SkillSlot {
+		Paradox,
+		SF,
+		Echo,
+		HoS,
+		Wastrel,
+		Channeling,
+		Shroud,
+		WayOfPerf
+	};
+	static const int SkillCost[];
+
 public:
 	SmartVaettirBot(GWCAClient& gwca) : Bot(gwca) {}
 
-	void Update(PseudoAgent& player, 
+	void Update(PseudoAgent* player, 
 		std::vector<AgentPosition> agents) override;
 
 private:
-	void StayAlive(PseudoAgent& player,
-		std::vector<AgentPosition> agents);
+	void StayAlive();
+	void UpdateCounts(std::vector<AgentPosition> agents);
+
+	void CheckUseSF();
+
+	void UseSkillEx(int slot, int target = Target::Self);
 
 	float GetSquaredDistance(float x1, float y1, float x2, float y2) {
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
 
-	int proximity_count;
-	int spellcast_count;
-	int area_count;
-	int adjacent_count;
+	int proximity_count_;
+	int spellcast_count_;
+	int area_count_;
+	int adjacent_count_;
+
+	PseudoAgent* player_;
 };
