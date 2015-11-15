@@ -1,20 +1,17 @@
 #pragma once
 
-#include <Windows.h>
-#include <d3d9.h>
+#include <vector>
 
-#include "MyD3DVertex.h"
-#include "Renderer.h"
+#include "PathingMap.h"
 
 class PmapRenderer {
 public:
-	PmapRenderer() : count_(0), buffer_(nullptr) {}
+	PmapRenderer() {}
 
-	bool Initialize(IDirect3DDevice9* device, unsigned int map_hash);
+	bool Initialize(unsigned int map_hash);
 
-	void Render(IDirect3DDevice9* device);
+	void Render();
 
 private:
-	IDirect3DVertexBuffer9* buffer_; // vertex buffer obect
-	unsigned int count_;	// number of triangles to render
+	std::vector<PathingMapTrapezoid> trapezoids_;
 };

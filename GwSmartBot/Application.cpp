@@ -1,83 +1,102 @@
 #include "Application.h"
 
-#include <DirectXMath.h>
+#include "SmartVaettirBot.h"
 
-Application::Application(HWND hWnd) : 
-	gwca(*new GWCAClient()), 
+Application::Application() : 
+	gwca_(*new GWCAClient()), 
+	bot_(*new SmartVaettirBot(gwca_)),
+	viewer_(*new Viewer()),
 	agent_renderer_(*new AgentRenderer()),
-	pmap_renderer_(*new PmapRenderer()) {
-	
-	// directx init
-	directx = Direct3DCreate9(D3D_SDK_VERSION);
-	D3DPRESENT_PARAMETERS d3dpp;
-	ZeroMemory(&d3dpp, sizeof(d3dpp));
-	d3dpp.Windowed = TRUE;
-	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.hDeviceWindow = hWnd;
+	pmap_renderer_(*new PmapRenderer()),
+	range_renderer_(*new RangeRenderer()) {
 
-	directx->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
-		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &device);
-
+	viewer_.InitializeWindow();
+	range_renderer_.Initialize();
 	
-	pmap_renderer_.Initialize(device, 127484);
-	agent_renderer_.Initialize(device);
+	//pmap_renderer_.Initialize(127484); // warrior's isle
+	pmap_renderer_.Initialize(290943); // jaga moraine
+}
+Application::~Application() {
+	delete &gwca_;
+	delete &viewer_;
+	delete &agent_renderer_;
+	delete &pmap_renderer_;
 }
 
 bool Application::Connect() {
 	HWND gw_handle = FindWindow(L"ArenaNet_Dx_Window_Class", NULL);
 	DWORD gw_pid;
 	GetWindowThreadProcessId(gw_handle, &gw_pid);
+	printf("Connecting to PID %d\n", gw_pid);
 
-	return gwca.ConnectByPID(gw_pid);
+	return gwca_.ConnectByPID(gw_pid);
 }
 
 void Application::Disconnect() {
-	gwca.Disconnect();
+	gwca_.Disconnect();
 }
 
-bool Application::HandleMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
-	return false;
+void Application::HandleInput() {
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0) {
+		switch (e.type) {
+		case SDL_QUIT:
+			viewer_.Close();
+			should_quit_ = true;
+			return; // not break
+		case SDL_MOUSEBUTTONDOWN:	HandleMouseDownEvent(e.button); break;
+		case SDL_MOUSEBUTTONUP:		HandleMouseUpEvent(e.button);	break;
+		case SDL_MOUSEMOTION:		HandleMouseMoveEvent(e.motion); break;
+		case SDL_MOUSEWHEEL:		HandleMouseWheelEvent(e.wheel); break;
+		case SDL_KEYDOWN:			HandleKeyDownEvent(e.key);		break;
+		case SDL_KEYUP:				HandleKeyUpEvent(e.key);		break;
+		case SDL_WINDOWEVENT:		HandleWindowEvent(e.window);	break;
+		default:
+			break;
+		}
+	}
 }
 
 void Application::Update() {
-	agents = gwca.GetAgentsPos();
-	player = gwca.GetPlayer();
-	printf("x %f, y %f\n", player.X, player.Y);
+	agents = gwca_.GetAgentsPos();
+	player = gwca_.GetPlayer();
+	bot_.Update(player, agents);
+	//printf("x %f, y %f\n", player.X, player.Y);
 }
 
 void Application::Render() {
-	using namespace DirectX;
-
-	device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 40, 100), 1.0f, 0);
-	device->BeginScene();
-
-	device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, TRUE);
-
-	XMFLOAT4X4 world;
-	XMStoreFloat4x4(&world, XMMatrixIdentity());
-	device->SetTransform(D3DTS_WORLD, (D3DMATRIX*)&world);
-
-	float aspect_ratio = 1.3f;
-	float scale_ = 0.0001f;
-	XMMATRIX translate = XMMatrixTranslation(0, -3000, 0);
-	XMMATRIX rotate = XMMatrixRotationZ(0);
-	XMMATRIX scale = XMMatrixScaling(scale_, scale_ * aspect_ratio, 1);
-	XMMATRIX combined = translate * rotate * scale;
-	XMFLOAT4X4 view;
-	XMStoreFloat4x4(&view, combined);
-	device->SetTransform(D3DTS_VIEW, (D3DMATRIX*)&view);
-
-	XMFLOAT4X4 projection;
-	XMStoreFloat4x4(&projection, XMMatrixOrthographicLH(2, 2, 0.5f, 1.5f));
-	device->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)&projection);
-
-	pmap_renderer_.Render(device);
-
-	agent_renderer_.Begin(device);
+	viewer_.RenderBegin();
+	pmap_renderer_.Render();
 	agent_renderer_.RenderAgents(agents);
 	agent_renderer_.RenderPlayer(&player);
-	agent_renderer_.End();
+	//range_renderer_.Render(player.X, player.Y);
+	viewer_.RenderEnd();
+}
 
-	device->EndScene();
-	device->Present(NULL, NULL, NULL, NULL);
+void Application::HandleMouseDownEvent(SDL_MouseButtonEvent e) {
+	viewer_.HandleMouseDownEvent(e);
+}
+
+void Application::HandleMouseUpEvent(SDL_MouseButtonEvent e) {
+	viewer_.HandleMouseUpEvent(e);
+}
+
+void Application::HandleMouseMoveEvent(SDL_MouseMotionEvent e) {
+	viewer_.HandleMouseMoveEvent(e);
+}
+
+void Application::HandleMouseWheelEvent(SDL_MouseWheelEvent e) {
+	viewer_.HandleMouseWheelEvent(e);
+}
+
+void Application::HandleKeyDownEvent(SDL_KeyboardEvent e) {
+}
+
+void Application::HandleKeyUpEvent(SDL_KeyboardEvent e) {
+}
+
+void Application::HandleWindowEvent(SDL_WindowEvent e) {
+	if (e.event == SDL_WINDOWEVENT_RESIZED) {
+		viewer_.Resize(e.data1, e.data2);
+	}
 }

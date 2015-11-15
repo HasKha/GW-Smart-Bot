@@ -71,7 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(ProjectDir)SDL2\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)SDL2\include;$(SolutionDir)gwcacomm\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -92,10 +93,13 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>GWCACppClient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>GWCACppClient.lib;SDL2.lib;SDL2main.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(ProjectDir)SDL2\SDL2.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -153,13 +157,20 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathingMap.cpp" />
     <ClCompile Include="PmapRenderer.cpp" />
+    <ClCompile Include="RangeRenderer.cpp" />
+    <ClCompile Include="SmartVaettirBot.cpp" />
+    <ClCompile Include="Viewer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AgentRenderer.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Bot.h" />
     <ClInclude Include="PathingMap.h" />
     <ClInclude Include="PmapRenderer.h" />
-    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Point2f.h" />
+    <ClInclude Include="RangeRenderer.h" />
+    <ClInclude Include="SmartVaettirBot.h" />
+    <ClInclude Include="Viewer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
