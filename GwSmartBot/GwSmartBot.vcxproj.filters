@@ -1,72 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Viewers">
+      <UniqueIdentifier>{592eae02-b6de-4b35-9d75-f05bc6f80a58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BotLogic">
+      <UniqueIdentifier>{bc4f3a7b-ece3-4d75-8334-dba1a2f7a5f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Actions">
+      <UniqueIdentifier>{3d5a6629-6430-4e9c-9a3d-8664de337e2b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PathingMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AgentRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="RangeRenderer.cpp">
+      <Filter>Viewers</Filter>
     </ClCompile>
     <ClCompile Include="PmapRenderer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Viewers</Filter>
     </ClCompile>
     <ClCompile Include="Viewer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Viewers</Filter>
     </ClCompile>
     <ClCompile Include="SmartVaettirBot.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>BotLogic</Filter>
     </ClCompile>
-    <ClCompile Include="RangeRenderer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="PathingMap.cpp" />
+    <ClCompile Include="AgentRenderer.cpp">
+      <Filter>Viewers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PathingMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AgentRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PmapRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Viewer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SmartVaettirBot.h">
-      <Filter>Header Files</Filter>
+      <Filter>Viewers</Filter>
     </ClInclude>
     <ClInclude Include="RangeRenderer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Viewers</Filter>
     </ClInclude>
-    <ClInclude Include="Point2f.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="PmapRenderer.h">
+      <Filter>Viewers</Filter>
+    </ClInclude>
+    <ClInclude Include="Bot.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartVaettirBot.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h" />
+    <ClInclude Include="PathingMap.h" />
+    <ClInclude Include="Point2f.h" />
+    <ClInclude Include="Action.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveAction.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Structures.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="AgentRenderer.h">
+      <Filter>Viewers</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="WaitAction.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Actions.h">
+      <Filter>Actions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

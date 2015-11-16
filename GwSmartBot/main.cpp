@@ -8,6 +8,8 @@ int main(int argc, char** argv) {
 	bool connected = app.Connect();
 	if (!connected) return EXIT_FAILURE;
 
+	app.DebugFunc();
+
 	while (true) {
 		app.HandleInput();
 		if (app.ShouldQuit()) break;

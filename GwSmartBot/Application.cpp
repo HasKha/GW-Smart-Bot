@@ -2,6 +2,10 @@
 
 #include "SmartVaettirBot.h"
 
+bool Application::DebugFunc() {
+	return true;
+}
+
 Application::Application() : 
 	gwca_(*new GWCAClient()), 
 	bot_(*new SmartVaettirBot(gwca_)),
@@ -58,18 +62,17 @@ void Application::HandleInput() {
 }
 
 void Application::Update() {
-	agents = gwca_.GetAgentsPos();
-	player = gwca_.GetPlayer();
-	bot_.Update(&player, agents);
-	//printf("x %f, y %f\n", player.X, player.Y);
+	world_.agents = gwca_.GetAgentsPos();
+	world_.player = gwca_.GetPlayer();
+	bot_.Update(world_);
 }
 
 void Application::Render() {
 	viewer_.RenderBegin();
 	pmap_renderer_.Render();
-	agent_renderer_.RenderAgents(agents);
-	agent_renderer_.RenderPlayer(&player);
-	range_renderer_.Render(player.X, player.Y);
+	agent_renderer_.RenderAgents(world_.agents);
+	agent_renderer_.RenderPlayer(world_.player);
+	range_renderer_.Render(world_.player.X, world_.player.Y);
 	viewer_.RenderEnd();
 }
 

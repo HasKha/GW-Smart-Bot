@@ -17,14 +17,14 @@ void AgentRenderer::RenderAgents(std::vector<AgentPosition> agents) {
 	glEnd();
 }
 
-void AgentRenderer::RenderPlayer(PseudoAgent* player) {
+void AgentRenderer::RenderPlayer(PseudoAgent& player) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColor3f(0, 1, 0);
 	glBegin(GL_QUADS);
 	float size = 100;
-	glVertex2f(player->X - size, player->Y + size);
-	glVertex2f(player->X + size, player->Y + size);
-	glVertex2f(player->X + size, player->Y - size);
-	glVertex2f(player->X - size, player->Y - size);
+	glVertex2f(player.X - size, player.Y + size);
+	glVertex2f(player.X + size, player.Y + size);
+	glVertex2f(player.X + size, player.Y - size);
+	glVertex2f(player.X - size, player.Y - size);
 	glEnd();
 }

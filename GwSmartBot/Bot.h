@@ -1,13 +1,14 @@
 #pragma once
 
+#include <vector>
 #include <GWCACppClient\GWCAClient.h>
+#include "Structures.h"
 
 class Bot {
 public:
 	Bot(GWCAClient& gwca) : gwca_(gwca) {}
 
-	virtual void Update(PseudoAgent* player, 
-		std::vector<AgentPosition> agents) = 0;
+	virtual void Update(World& world) = 0;
 
 protected:
 	GWCAClient& gwca_;

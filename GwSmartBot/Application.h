@@ -17,6 +17,8 @@ public:
 
 	bool Connect();
 
+	bool DebugFunc();
+
 	void HandleInput();
 	bool ShouldQuit() { return should_quit_; }
 	
@@ -39,8 +41,7 @@ private:
 
 	bool should_quit_;
 
-	std::vector<AgentPosition> agents;
-	PseudoAgent player;
+	World world_;
 	
 	GWCAClient& gwca_;
 

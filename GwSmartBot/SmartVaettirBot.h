@@ -1,8 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <queue>
 
 #include "Bot.h"
+#include "Actions.h"
 
 class SmartVaettirBot : public Bot {
 	enum SkillSlot {
@@ -18,27 +20,26 @@ class SmartVaettirBot : public Bot {
 	static const int SkillCost[];
 
 public:
-	SmartVaettirBot(GWCAClient& gwca) : Bot(gwca) {}
+	SmartVaettirBot(GWCAClient& gwca);
 
-	void Update(PseudoAgent* player, 
-		std::vector<AgentPosition> agents) override;
+	void Update(World& world) override;
 
 private:
 	void StayAlive();
 	void UpdateCounts(std::vector<AgentPosition> agents);
 
-	void CheckUseSF();
+	// returns true if it used sf
+	bool CheckUseSF();
 
-	void UseSkillEx(int slot, int target = Target::Self);
-
-	float GetSquaredDistance(float x1, float y1, float x2, float y2) {
-		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
-	}
+	// uses skill, waits until used, returns true if successful
+	bool UseSkillEx(int slot, int target = Target::Self);
 
 	int proximity_count_;
 	int spellcast_count_;
 	int area_count_;
 	int adjacent_count_;
 
-	PseudoAgent* player_;
+	PseudoAgent& player_;
+	std::queue<Action*> actions_;
+	Action* current_action_;
 };
