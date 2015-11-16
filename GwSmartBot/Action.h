@@ -1,13 +1,10 @@
 #pragma once
 
-#include <GWCACppClient\GWCAClient.h>
-
+#include <functional>
 #include "Structures.h"
 
 class Action {
 public:
-	Action(GWCAClient& gwca) : gwca_(gwca) {}
-
 	// perform the initial action, will be called once per action
 	virtual void Perform(World& world) = 0;
 
@@ -16,10 +13,20 @@ public:
 
 	// checks if the action is done, should return true when completed
 	virtual bool Done(World& world) = 0;
+};
 
-protected:
-	GWCAClient& gwca() { return gwca_; }
+// an action that happens only once
+class SimpleAction : public Action {
+public:
+	void Update(World&) final override {}
+	bool Done(World&) final override { return true; }
+};
+
+class CustomSimpleAction : public SimpleAction {
+public:
+	CustomSimpleAction(std::function<void(World&)> func) : func_(func) {}
+	void Perform(World& world) { func_(world); }
 
 private:
-	GWCAClient& gwca_;
+	std::function<void(World&)> func_;
 };

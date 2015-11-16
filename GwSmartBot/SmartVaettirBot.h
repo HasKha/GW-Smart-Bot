@@ -7,20 +7,8 @@
 #include "Actions.h"
 
 class SmartVaettirBot : public Bot {
-	enum SkillSlot {
-		Paradox,
-		SF,
-		Echo,
-		HoS,
-		Wastrel,
-		Channeling,
-		Shroud,
-		WayOfPerf
-	};
-	static const int SkillCost[];
-
 public:
-	SmartVaettirBot(GWCAClient& gwca);
+	SmartVaettirBot();
 
 	void Update(World& world) override;
 

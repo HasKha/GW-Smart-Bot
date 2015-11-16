@@ -7,7 +7,7 @@
 class WaitAction : public Action {
 public:
 	// wait for a set amount of time (in milliseconds)
-	WaitAction(GWCAClient& gwca, long time) : Action(gwca), time_(time) {}
+	WaitAction(long time) : time_(time) {}
 
 	// perform the initial action, will be called once per action
 	void Perform(World& world) override {

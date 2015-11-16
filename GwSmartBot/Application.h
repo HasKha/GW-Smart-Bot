@@ -28,8 +28,6 @@ public:
 	
 	void Disconnect();
 
-	GWCAClient& gwca() { return gwca_; }
-
 private:
 	void HandleMouseDownEvent(SDL_MouseButtonEvent);
 	void HandleMouseUpEvent(SDL_MouseButtonEvent);
@@ -43,8 +41,6 @@ private:
 
 	World world_;
 	
-	GWCAClient& gwca_;
-
 	Bot& bot_;
 	
 	Viewer& viewer_;

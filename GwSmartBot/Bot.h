@@ -6,10 +6,10 @@
 
 class Bot {
 public:
-	Bot(GWCAClient& gwca) : gwca_(gwca) {}
+	Bot() {}
 
 	virtual void Update(World& world) = 0;
 
 protected:
-	GWCAClient& gwca_;
+	GWCAClient& gwca() { return GWCAClient::Api(); }
 };

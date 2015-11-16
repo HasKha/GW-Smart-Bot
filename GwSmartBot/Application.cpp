@@ -7,12 +7,14 @@ bool Application::DebugFunc() {
 }
 
 Application::Application() : 
-	gwca_(*new GWCAClient()), 
-	bot_(*new SmartVaettirBot(gwca_)),
+	should_quit_(false),
+	bot_(*new SmartVaettirBot()),
 	viewer_(*new Viewer()),
 	agent_renderer_(*new AgentRenderer()),
 	pmap_renderer_(*new PmapRenderer()),
 	range_renderer_(*new RangeRenderer()) {
+
+	GWCAClient::Initialize();
 
 	viewer_.InitializeWindow();
 	range_renderer_.Initialize();
@@ -21,7 +23,7 @@ Application::Application() :
 	pmap_renderer_.Initialize(290943); // jaga moraine
 }
 Application::~Application() {
-	delete &gwca_;
+	GWCAClient::Destroy();
 	delete &viewer_;
 	delete &agent_renderer_;
 	delete &pmap_renderer_;
@@ -33,11 +35,11 @@ bool Application::Connect() {
 	GetWindowThreadProcessId(gw_handle, &gw_pid);
 	printf("Connecting to PID %d\n", gw_pid);
 
-	return gwca_.ConnectByPID(gw_pid);
+	return GWCAClient::Api().ConnectByPID(gw_pid);
 }
 
 void Application::Disconnect() {
-	gwca_.Disconnect();
+	GWCAClient::Api().Disconnect();
 }
 
 void Application::HandleInput() {
@@ -62,9 +64,10 @@ void Application::HandleInput() {
 }
 
 void Application::Update() {
-	world_.agents = gwca_.GetAgentsPos();
-	world_.player = gwca_.GetPlayer();
+	world_.agents = GWCAClient::Api().GetAgentsPos();
+	world_.player = GWCAClient::Api().GetPlayer();
 	bot_.Update(world_);
+	Sleep(10);
 }
 
 void Application::Render() {

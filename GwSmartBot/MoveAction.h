@@ -1,20 +1,38 @@
 #pragma once
 
+#include <GWCACppClient\GWCAClient.h>
+
 #include "Action.h"
 
 #include "Utils.h"
+#include "Constants.h"
 
 class MoveAction : public Action {
 public:
-	MoveAction(GWCAClient& gwca, float x, float y) : Action(gwca), x_(x), y_(y) {}
+	MoveAction(float x, float y) : x_(x), y_(y), blocked_(0) {}
 	
 	void Perform(World& world) override {
-		printf("moving\n");
-		gwca().Move(x_, y_);
+		GWCAClient::Api().Move(x_, y_);
 	}
 
 	void Update(World& world) override {
-		// TODO: check if stuck, if so hos/move again
+		if (world.player.MoveX == 0 && world.player.MoveY == 0) {
+			printf("not moving! blocked = %d\n", blocked_);
+
+			++blocked_;
+
+			if (blocked_ < 15) {
+				Perform(world);
+				Sleep(50);
+			} else {
+				if (GWCAClient::Api().IsSkillRecharged(SkillSlot::HoS)) {
+					GWCAClient::Api().UseSkill(SkillSlot::HoS, Target::Self);
+					blocked_ = 0;
+				}
+			}
+		} else {
+			blocked_ = 0;
+		}
 	}
 
 	bool Done(World& world) override {
@@ -22,6 +40,7 @@ public:
 	}
 
 private:
+	int blocked_;
 	float x_;
 	float y_;
 };

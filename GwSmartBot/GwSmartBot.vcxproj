@@ -167,6 +167,7 @@
     <ClInclude Include="AgentRenderer.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bot.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="MoveAction.h" />
     <ClInclude Include="PathingMap.h" />
     <ClInclude Include="PmapRenderer.h" />
