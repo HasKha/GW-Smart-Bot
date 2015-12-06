@@ -10,7 +10,7 @@ class LogAction : public SimpleAction {
 public:
 	LogAction(std::string message) : message_(message) {}
 
-	void Perform(World& ) override {
+	void Perform(const World& ) override {
 		printf("%s\n", message_.c_str());
 	}
 
@@ -22,7 +22,7 @@ class UseSkillAction : public SimpleAction {
 public:
 	UseSkillAction(int slot, int target) : slot_(slot), target_(target) {}
 
-	void Perform(World&) override {
+	void Perform(const World&) override {
 		GWCAClient::Api().UseSkill(slot_, target_);
 	}
 

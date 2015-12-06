@@ -14,16 +14,17 @@ Viewer::Viewer() :
 }
 
 void Viewer::InitializeWindow() {
-	int default_width = 800;
-	int default_height = 600;
+	int default_width = 600;
+	int default_height = 800;
+
+	translate_ = Point2f(-10500, 19500);
+	scale_ = 0.00022f;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow("GwSmartBot",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		default_width, default_height,
 		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-
-	SDL_GL_CreateContext(window);
 
 	SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(1);

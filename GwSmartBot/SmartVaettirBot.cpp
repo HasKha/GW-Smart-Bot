@@ -3,7 +3,8 @@
 #include <GWCA\GWCA\GwConstants.h>
 #include "Utils.h"
 
-SmartVaettirBot::SmartVaettirBot() : player_(PseudoAgent()), current_action_(nullptr) {
+SmartVaettirBot::SmartVaettirBot() : 
+	player_(PseudoAgent()), current_action_(nullptr) {
 
 	actions_.push(new LogAction("Doing left side"));
 	actions_.push(new MoveAction(13501, -20925));
@@ -60,15 +61,18 @@ SmartVaettirBot::SmartVaettirBot() : player_(PseudoAgent()), current_action_(nul
 	actions_.push(new LogAction("Please take over, and kill them all"));
 }
 
-void SmartVaettirBot::Update(World& world) {
+void SmartVaettirBot::Update(const World world) {
 	if (world.player.Id == 0) return;
+	if (GWCAClient::Api().GetInstancType() != GwConstants::InstanceType::Explorable) return;
+	if (GWCAClient::Api().GetMapID() != GwConstants::MapID::Jaga_Moraine) return;
 
 	player_ = world.player;
 	UpdateCounts(world.agents);
 
 	StayAlive();
-
-	if (!actions_.empty()) {
+	
+	bool doactions = true;
+	if (doactions && !actions_.empty()) {
 		if (current_action_ == nullptr) {
 			current_action_ = actions_.front();
 			current_action_->Perform(world);

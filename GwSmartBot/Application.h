@@ -3,12 +3,15 @@
 #include <GWCACppClient\GWCAClient.h>
 
 #include <SDL2\SDL.h>
+#include <thread>
+#include <functional>
+#include <future>
 
 #include "AgentRenderer.h"
 #include "PmapRenderer.h"
 #include "RangeRenderer.h"
 #include "Viewer.h"
-#include "Bot.h"
+#include "SmartVaettirBot.h"
 
 class Application {
 public:
@@ -20,6 +23,7 @@ public:
 	bool DebugFunc();
 
 	void HandleInput();
+
 	bool ShouldQuit() { return should_quit_; }
 	
 	void Update();
@@ -27,6 +31,8 @@ public:
 	void Render();
 	
 	void Disconnect();
+
+	const World world() { return world_; }
 
 private:
 	void HandleMouseDownEvent(SDL_MouseButtonEvent);
@@ -40,11 +46,9 @@ private:
 	bool should_quit_;
 
 	World world_;
-	
-	Bot& bot_;
-	
-	Viewer& viewer_;
-	AgentRenderer& agent_renderer_;
-	PmapRenderer& pmap_renderer_;
-	RangeRenderer& range_renderer_;
+		
+	Viewer viewer_;
+	AgentRenderer agent_renderer_;
+	PmapRenderer pmap_renderer_;
+	RangeRenderer range_renderer_;
 };

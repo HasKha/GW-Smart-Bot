@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <SDL2\SDL.h>
+
 #include "Application.h"
 
 int main(int argc, char** argv) {
@@ -10,12 +12,16 @@ int main(int argc, char** argv) {
 
 	app.DebugFunc();
 
+
+
 	while (true) {
 		app.HandleInput();
 		if (app.ShouldQuit()) break;
 
 		app.Update();
 		app.Render();
+
+		SDL_Delay(10);
 	}
 
 	app.Disconnect();

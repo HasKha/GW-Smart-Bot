@@ -9,8 +9,8 @@
 class SmartVaettirBot : public Bot {
 public:
 	SmartVaettirBot();
-
-	void Update(World& world) override;
+	
+	void Update(const World world) override;
 
 private:
 	void StayAlive();

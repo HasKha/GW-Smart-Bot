@@ -1,18 +1,15 @@
 #include "Application.h"
 
-#include "SmartVaettirBot.h"
-
 bool Application::DebugFunc() {
 	return true;
 }
 
-Application::Application() : 
+Application::Application() :
 	should_quit_(false),
-	bot_(*new SmartVaettirBot()),
-	viewer_(*new Viewer()),
-	agent_renderer_(*new AgentRenderer()),
-	pmap_renderer_(*new PmapRenderer()),
-	range_renderer_(*new RangeRenderer()) {
+	viewer_(Viewer()),
+	agent_renderer_(AgentRenderer()),
+	pmap_renderer_(PmapRenderer()),
+	range_renderer_(RangeRenderer()) {
 
 	GWCAClient::Initialize();
 
@@ -22,11 +19,9 @@ Application::Application() :
 	//pmap_renderer_.Initialize(127484); // warrior's isle
 	pmap_renderer_.Initialize(290943); // jaga moraine
 }
+
 Application::~Application() {
 	GWCAClient::Destroy();
-	delete &viewer_;
-	delete &agent_renderer_;
-	delete &pmap_renderer_;
 }
 
 bool Application::Connect() {
@@ -64,10 +59,9 @@ void Application::HandleInput() {
 }
 
 void Application::Update() {
+	if (GWCAClient::Api().GetInstancType() == GwConstants::InstanceType::Loading) return;
 	world_.agents = GWCAClient::Api().GetAgentsPos();
 	world_.player = GWCAClient::Api().GetPlayer();
-	bot_.Update(world_);
-	Sleep(10);
 }
 
 void Application::Render() {
