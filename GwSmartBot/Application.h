@@ -32,8 +32,6 @@ public:
 	
 	void Disconnect();
 
-	const World world() { return world_; }
-
 private:
 	void HandleMouseDownEvent(SDL_MouseButtonEvent);
 	void HandleMouseUpEvent(SDL_MouseButtonEvent);
@@ -43,12 +41,20 @@ private:
 	void HandleKeyUpEvent(SDL_KeyboardEvent);
 	void HandleWindowEvent(SDL_WindowEvent);
 
+	void RenderFixedPath();
+
 	bool should_quit_;
 
-	World world_;
+	World& world_;
 		
 	Viewer viewer_;
 	AgentRenderer agent_renderer_;
 	PmapRenderer pmap_renderer_;
 	RangeRenderer range_renderer_;
+
+	bool bot_active_;
+	SmartVaettirBot& bot_;
+
+	std::vector<Point2f> fixed_path_;
+	std::vector<Point2f> actual_path_;
 };

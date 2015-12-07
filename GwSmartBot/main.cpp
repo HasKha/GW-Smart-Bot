@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 		app.Update();
 		app.Render();
 
-		SDL_Delay(10);
+		SDL_Delay(20);
 	}
 
 	app.Disconnect();

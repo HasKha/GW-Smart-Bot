@@ -9,10 +9,16 @@
 
 class MoveAction : public Action {
 public:
-	MoveAction(float x, float y) : x_(x), y_(y), blocked_(0) {}
+	MoveAction(float x, float y, float precision) 
+		: x_(x), y_(y), precision_(precision), blocked_(0) {}
+	MoveAction(float x, float y) : MoveAction(x, y, 200.0f) {}
 	
 	void Perform(const World& world) override {
 		GWCAClient::Api().Move(x_, y_);
+	}
+
+	void Resume(const World& world) override {
+		Perform(world);
 	}
 
 	void Update(const World& world) override {
@@ -36,11 +42,13 @@ public:
 	}
 
 	bool Done(const World& world) override {
-		return Utils::GetSquaredDistance(world.player.X, world.player.Y, x_, y_) < (200 * 200);
+		return Utils::GetSquaredDistance(world.player.X, 
+			world.player.Y, x_, y_) < (precision_ * precision_);
 	}
 
 private:
 	int blocked_;
 	float x_;
 	float y_;
+	float precision_;
 };

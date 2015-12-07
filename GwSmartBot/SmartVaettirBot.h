@@ -3,31 +3,36 @@
 #include <vector>
 #include <queue>
 
-#include "Bot.h"
 #include "Actions.h"
 
-class SmartVaettirBot : public Bot {
+class SmartVaettirBot {
 public:
-	SmartVaettirBot();
+	SmartVaettirBot(const World& world);
 	
-	void Update(const World world) override;
+	void Update();
 
 private:
+	GWCAClient gwca() { return GWCAClient::Api(); }
+
 	void StayAlive();
-	void UpdateCounts(std::vector<AgentPosition> agents);
+	void UpdateCounts();
 
 	// returns true if it used sf
 	bool CheckUseSF();
 
 	// uses skill, waits until used, returns true if successful
-	bool UseSkillEx(int slot, int target = Target::Self);
+	void UseSkillEx(int slot, int target = Target::Self);
 
 	int proximity_count_;
 	int spellcast_count_;
 	int area_count_;
 	int adjacent_count_;
 
-	PseudoAgent& player_;
-	std::queue<Action*> actions_;
+	const World& world_;
+
 	Action* current_action_;
+	std::queue<Action*> action_queue_;
+	UseSkillAction* current_cast_;
+	std::queue<UseSkillAction*> cast_queue_;
+	
 };

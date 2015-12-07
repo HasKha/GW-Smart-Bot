@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Action.h"
-
 #include <ctime>
+
+#include "Action.h"
 
 class WaitAction : public Action {
 public:
@@ -14,12 +14,9 @@ public:
 		start_ = std::clock();
 	}
 
-	// check for status, will be called once per loop
-	void Update(const World& world) override {}
-
 	// checks if the action is done, should return true when completed
 	bool Done(const World& world) override {
-		long elapsed = (std::clock() - start_) * 1000 / CLOCKS_PER_SEC;
+		long elapsed = std::clock() - start_;
 		return elapsed > time_;
 	}
 

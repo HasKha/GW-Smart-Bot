@@ -70,11 +70,17 @@
     <ClInclude Include="WaitAction.h">
       <Filter>Actions</Filter>
     </ClInclude>
-    <ClInclude Include="Actions.h">
-      <Filter>Actions</Filter>
-    </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="UseSkillAction.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="LogAction.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Actions.h">
+      <Filter>Actions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

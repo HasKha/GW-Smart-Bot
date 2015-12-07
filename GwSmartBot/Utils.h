@@ -14,19 +14,19 @@ public:
 		return std::sqrt(GetSquaredDistance(x1, y1, x2, y2));
 	}
 
-	static float GetDistance(PseudoAgent& a1, AgentPosition& a2) {
+	static float GetDistance(const PseudoAgent& a1, AgentPosition& a2) {
 		return GetDistance(a1.X, a1.Y, a2.x, a2.y);
 	}
 
-	static float GetSquaredDistance(PseudoAgent& a1, AgentPosition& a2) {
+	static float GetSquaredDistance(const PseudoAgent& a1, const AgentPosition& a2) {
 		return GetSquaredDistance(a1.X, a1.Y, a2.x, a2.y);
 	}
 
-	static float GetDistance(AgentPosition& a1, AgentPosition& a2) {
+	static float GetDistance(const AgentPosition& a1, const AgentPosition& a2) {
 		return GetDistance(a1.x, a1.y, a2.x, a2.y);
 	}
 
-	static float GetSquaredDistance(AgentPosition& a1, AgentPosition& a2) {
+	static float GetSquaredDistance(const AgentPosition& a1, const AgentPosition& a2) {
 		return GetSquaredDistance(a1.x, a1.y, a2.x, a2.y);
 	}
 };

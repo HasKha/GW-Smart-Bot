@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="Action.h" />
     <ClInclude Include="Actions.h" />
+    <ClInclude Include="LogAction.h" />
     <ClInclude Include="AgentRenderer.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Bot.h" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Point2f.h" />
     <ClInclude Include="RangeRenderer.h" />
     <ClInclude Include="SmartVaettirBot.h" />
+    <ClInclude Include="UseSkillAction.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Viewer.h" />
     <ClInclude Include="Structures.h" />

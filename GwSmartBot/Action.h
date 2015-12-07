@@ -8,21 +8,20 @@ public:
 	// perform the initial action, will be called once per action
 	virtual void Perform(const World& world) = 0;
 
+	// resume the action after a pause, a different action, or a sub-action
+	// e.g. resume moving after casting
+	virtual void Resume(const World& world) {}
+
 	// check for status, will be called once per loop
-	virtual void Update(const World& world) = 0;
+	virtual void Update(const World& world) {};
 
 	// checks if the action is done, should return true when completed
-	virtual bool Done(const World& world) = 0;
+	virtual bool Done(const World& world) { return true; };
 };
 
-// an action that happens only once
-class SimpleAction : public Action {
-public:
-	void Update(const World&) final override {}
-	bool Done(const World&) final override { return true; }
-};
-
-class CustomSimpleAction : public SimpleAction {
+// an action that happens only once, 
+// the action is passed as a std::func
+class CustomSimpleAction : public Action {
 public:
 	CustomSimpleAction(std::function<void(const World&)> func) : func_(func) {}
 	void Perform(const World& world) { func_(world); }
