@@ -13,9 +13,9 @@ public:
 		UseSkillAction(slot, target, 0) {}
 
 	void Perform(const World& world) override {
-		if (world.player.GetIsDead()
+		if (world.player().GetIsDead()
 			|| !GWCAClient::Api().IsSkillRecharged(slot_)
-			|| world.player.GetEnergy() < cost_) {
+			|| world.player().GetEnergy() < cost_) {
 			failed_ = true;
 			printf("failed casting %d\n", slot_);
 		} else {
@@ -26,7 +26,7 @@ public:
 	}
 
 	void Update(const World& world) override {
-		if (!failed_ && casting_ && world.player.Skill == 0) {
+		if (!failed_ && casting_ && world.player().Skill == 0) {
 			printf("warning: not casting %d\n", slot_);
 		}
 	}
@@ -34,7 +34,7 @@ public:
 	bool Done(const World& world) override {
 		if (failed_) return true;
 		if (casting_) {
-			if (world.player.GetIsDead()) return true;
+			if (world.player().GetIsDead()) return true;
 			if (failed_) return true;
 			if (!GWCAClient::Api().IsSkillRecharged(slot_)) {
 				casting_ = false;

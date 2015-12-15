@@ -14,7 +14,7 @@ public:
 		return std::sqrt(GetSquaredDistance(x1, y1, x2, y2));
 	}
 
-	static float GetDistance(const PseudoAgent& a1, AgentPosition& a2) {
+	static float GetDistance(const PseudoAgent& a1, const AgentPosition& a2) {
 		return GetDistance(a1.X, a1.Y, a2.x, a2.y);
 	}
 

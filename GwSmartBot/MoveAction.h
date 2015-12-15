@@ -22,7 +22,7 @@ public:
 	}
 
 	void Update(const World& world) override {
-		if (world.player.MoveX == 0 && world.player.MoveY == 0) {
+		if (world.player().MoveX == 0 && world.player().MoveY == 0) {
 			printf("not moving! blocked = %d\n", blocked_);
 
 			++blocked_;
@@ -42,8 +42,8 @@ public:
 	}
 
 	bool Done(const World& world) override {
-		return Utils::GetSquaredDistance(world.player.X, 
-			world.player.Y, x_, y_) < (precision_ * precision_);
+		return Utils::GetSquaredDistance(world.player().X, 
+			world.player().Y, x_, y_) < (precision_ * precision_);
 	}
 
 private:

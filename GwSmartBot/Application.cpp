@@ -101,13 +101,21 @@ void Application::HandleInput() {
 
 void Application::Update() {
 	if (GWCAClient::Api().GetInstancType() == GwConstants::InstanceType::Loading) return;
-	world_.agents = GWCAClient::Api().GetAgentsPos();
-	world_.player = GWCAClient::Api().GetPlayer();
 
-	static int asd = 1;
-	asd = (asd + 1) % 10;
-	if (asd == 0) {
-		Point2f pos = Point2f(world_.player.X, world_.player.Y);
+	if (current_map_ != GWCAClient::Api().GetMapID()) {
+		current_map_ = GWCAClient::Api().GetMapID();
+		path_planner_.Clear();
+		actual_path_.clear();
+		printf("Zoned to %d, cleaned up things\n", current_map_);
+		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+	}
+
+	world_.Update();
+
+	static int tau = 1;
+	tau = (tau + 1) % 10;
+	if (tau == 0) {
+		Point2f pos = Point2f(world_.player().X, world_.player().Y);
 		if (actual_path_.empty() || !(actual_path_.back() == pos)) {
 			actual_path_.push_back(pos);
 		}
@@ -116,6 +124,8 @@ void Application::Update() {
 	if (bot_active_) {
 		bot_.Update();
 	}
+
+	path_planner_.Update(world_);
 }
 
 void Application::Render() {
@@ -123,12 +133,12 @@ void Application::Render() {
 	viewer_.RenderBegin();
 	pmap_renderer_.Render();
 	
-	glColor3f(1, 0, 0);
-	glBegin(GL_LINE_STRIP);
-	for (Point2f p : fixed_path_) {
-		glVertex2f(p.x(), p.y());
-	}
-	glEnd();
+	//glColor3f(1, 0, 0);
+	//glBegin(GL_LINE_STRIP);
+	//for (Point2f p : fixed_path_) {
+	//	glVertex2f(p.x(), p.y());
+	//}
+	//glEnd();
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINE_STRIP);
 	for (Point2f p : actual_path_) {
@@ -136,9 +146,11 @@ void Application::Render() {
 	}
 	glEnd();
 
-	agent_renderer_.RenderAgents(world_.agents);
-	agent_renderer_.RenderPlayer(world_.player);
-	range_renderer_.Render(world_.player.X, world_.player.Y);
+	path_planner_.Render(world_);
+
+	agent_renderer_.RenderAgents(world_.agents());
+	agent_renderer_.RenderPlayer(world_.player());
+	range_renderer_.Render(world_.player().X, world_.player().Y);
 	viewer_.RenderEnd();
 }
 

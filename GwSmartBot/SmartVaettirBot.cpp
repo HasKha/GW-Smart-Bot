@@ -15,9 +15,9 @@ SmartVaettirBot::SmartVaettirBot(const World& world) :
 	action_queue_.push(new CustomSimpleAction([](const World& world) {
 		float closest_dist = GwConstants::SqrRange::Compass;
 		DWORD closest_id = Target::Self;
-		for (AgentPosition agent : world.agents) {
-			if (closest_dist > Utils::GetSquaredDistance(world.player, agent)) {
-				closest_dist = Utils::GetSquaredDistance(world.player, agent);
+		for (AgentPosition agent : world.agents()) {
+			if (closest_dist > Utils::GetSquaredDistance(world.player(), agent)) {
+				closest_dist = Utils::GetSquaredDistance(world.player(), agent);
 				closest_id = agent.id;
 			}
 		}
@@ -75,7 +75,7 @@ SmartVaettirBot::SmartVaettirBot(const World& world) :
 }
 
 void SmartVaettirBot::Update() {
-	if (world_.player.Id == 0) return;
+	if (world_.player().Id == 0) return;
 	if (GWCAClient::Api().GetInstancType() != GwConstants::InstanceType::Explorable) return;
 	if (GWCAClient::Api().GetMapID() != GwConstants::MapID::Jaga_Moraine) return;
 
@@ -125,20 +125,20 @@ void SmartVaettirBot::Update() {
 }
 
 void SmartVaettirBot::StayAlive() {
-	if (world_.player.GetIsDead()) return; // Sorry, I failed
+	if (world_.player().GetIsDead()) return; // Sorry, I failed
 	if (CheckUseSF()) {
 		// nothing, we already used sf
 	} else if (gwca().IsSkillRecharged(SkillSlot::Shroud)) {
 		if (gwca().GetEffectTimeRemaining(GwConstants::SkillID::Shroud_of_Distress) == 0
 			&& proximity_count_ > 0) {
 			UseSkillEx(SkillSlot::Shroud);
-		} else if (world_.player.HP < 0.6) {
+		} else if (world_.player().HP < 0.6) {
 			UseSkillEx(SkillSlot::Shroud);
 		} else if (adjacent_count_ > 20) {
 			UseSkillEx(SkillSlot::Shroud);
 		}
 	} else if (gwca().IsSkillRecharged(SkillSlot::WayOfPerf)) {
-		if (world_.player.HP < 0.5) {
+		if (world_.player().HP < 0.5) {
 			UseSkillEx(SkillSlot::WayOfPerf);
 		} else if (adjacent_count_ > 20) {
 			UseSkillEx(SkillSlot::WayOfPerf);
@@ -166,8 +166,8 @@ void SmartVaettirBot::UpdateCounts() {
 	area_count_ = 0;
 	adjacent_count_ = 0;
 
-	for (AgentPosition agent : world_.agents) {
-		float distance = Utils::GetSquaredDistance(world_.player, agent);
+	for (AgentPosition agent : world_.agents()) {
+		float distance = Utils::GetSquaredDistance(world_.player(), agent);
 		if (distance < 1300 * 1300) {
 			++proximity_count_;
 			if (distance < GwConstants::SqrRange::Spellcast) {

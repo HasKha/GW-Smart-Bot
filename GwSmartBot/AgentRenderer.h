@@ -6,6 +6,6 @@
 
 class AgentRenderer {
 public:
-	void RenderAgents(std::vector<AgentPosition> agents);
-	void RenderPlayer(PseudoAgent& player);
+	void RenderAgents(const std::vector<AgentPosition>& agents);
+	void RenderPlayer(const PseudoAgent& player);
 };

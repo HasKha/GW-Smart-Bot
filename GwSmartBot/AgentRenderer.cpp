@@ -2,7 +2,7 @@
 
 #include <SDL2\SDL_opengl.h>
 
-void AgentRenderer::RenderAgents(std::vector<AgentPosition> agents) {
+void AgentRenderer::RenderAgents(const std::vector<AgentPosition>& agents) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColor3f(1, 0, 0);
 	glBegin(GL_QUADS);
@@ -17,7 +17,7 @@ void AgentRenderer::RenderAgents(std::vector<AgentPosition> agents) {
 	glEnd();
 }
 
-void AgentRenderer::RenderPlayer(PseudoAgent& player) {
+void AgentRenderer::RenderPlayer(const PseudoAgent& player) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColor3f(0, 1, 0);
 	glBegin(GL_QUADS);

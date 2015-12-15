@@ -14,6 +14,9 @@
     <Filter Include="Actions">
       <UniqueIdentifier>{3d5a6629-6430-4e9c-9a3d-8664de337e2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PathPlanning">
+      <UniqueIdentifier>{20dc0e76-84c3-4e49-8427-ea6dce4371a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RangeRenderer.cpp">
@@ -33,6 +36,12 @@
     <ClCompile Include="PathingMap.cpp" />
     <ClCompile Include="AgentRenderer.cpp">
       <Filter>Viewers</Filter>
+    </ClCompile>
+    <ClCompile Include="Clustering.cpp">
+      <Filter>PathPlanning</Filter>
+    </ClCompile>
+    <ClCompile Include="PathPlanner.cpp">
+      <Filter>PathPlanning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +90,12 @@
     </ClInclude>
     <ClInclude Include="Actions.h">
       <Filter>Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="Clustering.h">
+      <Filter>PathPlanning</Filter>
+    </ClInclude>
+    <ClInclude Include="PathPlanner.h">
+      <Filter>PathPlanning</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@
 #include "RangeRenderer.h"
 #include "Viewer.h"
 #include "SmartVaettirBot.h"
+#include "PathPlanner.h"
 
 class Application {
 public:
@@ -46,11 +47,14 @@ private:
 	bool should_quit_;
 
 	World& world_;
+
+	GwConstants::MapID current_map_;
 		
 	Viewer viewer_;
 	AgentRenderer agent_renderer_;
 	PmapRenderer pmap_renderer_;
 	RangeRenderer range_renderer_;
+	PathPlanner path_planner_;
 
 	bool bot_active_;
 	SmartVaettirBot& bot_;
