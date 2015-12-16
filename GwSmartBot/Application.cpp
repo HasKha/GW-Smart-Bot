@@ -57,6 +57,8 @@ Application::Application() :
 	fixed_path_.push_back(Point2f(12617, -17273));
 	fixed_path_.push_back(Point2f(12518, -17305));
 	fixed_path_.push_back(Point2f(12445, -17327));
+
+	path_planner_.SetDestination(Point2f(8982, -20576));
 }
 
 Application::~Application() {
@@ -116,8 +118,11 @@ void Application::Update() {
 	tau = (tau + 1) % 10;
 	if (tau == 0) {
 		Point2f pos = Point2f(world_.player().X, world_.player().Y);
-		if (actual_path_.empty() || !(actual_path_.back() == pos)) {
-			actual_path_.push_back(pos);
+		if (pos.x() != 0 || pos.y() != 0) {
+			if (actual_path_.empty() || !(actual_path_.back() == pos)) {
+				actual_path_.push_back(pos);
+				//printf("x %f y %f\n", pos.x(), pos.y());
+			}
 		}
 	}
 

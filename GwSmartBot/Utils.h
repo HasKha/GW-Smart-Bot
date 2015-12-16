@@ -3,6 +3,8 @@
 #include <cmath>
 #include <GWCACppClient\GWCAClient.h>
 
+#include "Point2f.h"
+
 // a collection of static utility methods
 class Utils {
 public:
@@ -28,5 +30,13 @@ public:
 
 	static float GetSquaredDistance(const AgentPosition& a1, const AgentPosition& a2) {
 		return GetSquaredDistance(a1.x, a1.y, a2.x, a2.y);
+	}
+
+	static float GetSquaredDistance(const Point2f& p1, const Point2f p2) {
+		return GetSquaredDistance(p1.x(), p1.y(), p2.x(), p2.y());
+	}
+
+	static float GetSquaredDistance(const AgentPosition& a1, const Point2f p2) {
+		return GetSquaredDistance(a1.x, a1.y, p2.x(), p2.y());
 	}
 };

@@ -4,18 +4,58 @@
 #include <vector>
 
 #include "Clustering.h"
+#include "Point2f.h"
 
-struct PathNode {
-	PathNode() : cluster(nullptr), agentid(-1) {}
-	PathNode(Cluster* _cluster, long _agentid) :
-		cluster(_cluster), agentid(_agentid) {}
-	Cluster* cluster;
+class PathNode {
+public:
+	PathNode() : cluster_(nullptr) {}
+	PathNode(Cluster* cluster) : cluster_(cluster) {}
+
+	virtual Point2f Pos(const World& world) = 0;
+	virtual bool valid(const World& world) = 0;
+
+	Cluster* cluster() { return cluster_; }
+
+private:
+	Cluster* cluster_;
+};
+
+class FixedPathNode : public PathNode {
+public:
+	FixedPathNode(Point2f pos) : pos_(pos) {}
+	Point2f Pos(const World&) override { return pos_; }
+	bool valid(const World&) override { return true; }
+private:
+	Point2f pos_;
+};
+
+class PlayerPathNode : public PathNode {
+public:
+	Point2f Pos(const World& world) override {
+		GWAPI::GW::GamePos pos = world.player().pos;
+		return Point2f(pos.x, pos.y);
+	}
+	bool valid(const World&) override { return true; }
+};
+
+class AgentPathNode : public PathNode {
+public:
+	AgentPathNode(long id, Cluster* cluster) : agentid(id), PathNode(cluster) {}
+	Point2f Pos(const World& world) override {
+		AgentPosition pos = world.GetAgentByID(agentid);
+		return Point2f(pos.x, pos.y);
+	}
+
+	bool valid(const World& world) override { 
+		return world.GetAgentByID(agentid).valid();
+	}
+
+private:
 	long agentid;
-
-	bool valid() { return agentid != -1 && cluster != nullptr; }
 };
 
 class PathPlanner {
+	static const int NORTH_SOUTH_LINE = -19930;
 public:
 	void Update(const World& world);
 
@@ -23,11 +63,19 @@ public:
 
 	void Clear();
 
-private:
-	PathNode Nearest(const World& world, std::vector<Cluster*> clusters, 
-		const AgentPosition agent);
-	void PlanPath(const World& world);
+	void SetDestination(const Point2f p) { destination_ = p; }
 
-	std::vector<PathNode> path_;
+private:
+	PathNode* Nearest(const World& world, std::vector<Cluster*> clusters, 
+		const Point2f pos);
+	
+	void PlanPath(const World& world);
+	std::vector<Cluster*> GetFilteredClusters(const World& world);
+	void ConstructPath(const World& world);
+	void OptimizeAgentInCluster(const World& world);
+
 	Clustering clustering;
+
+	Point2f destination_;
+	std::vector<PathNode*> path_;
 };
