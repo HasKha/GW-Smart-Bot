@@ -6,18 +6,10 @@
 
 #include "Structures.h"
 
-class Cluster {
-public:
-	void Insert(long agentid) { agents_.insert(agentid); }
-	long Size() { return agents_.size(); }
-
-	std::set<long>::const_iterator begin() const { return agents_.begin(); }
-	std::set<long>::const_iterator end() const { return agents_.end(); }
-
+struct Cluster {
 	bool IsInRange(const World& world) const;
 
-private:
-	std::set<long> agents_;
+	std::set<long> agents;
 };
 
 class Clustering {
@@ -32,9 +24,9 @@ public:
 
 	void ClearClusters();
 
-	const std::vector<Cluster>& clusters() { return clusters_; }
+	const std::vector<Cluster*>& clusters() { return clusters_; }
 
 private:
-	std::vector<Cluster> clusters_;
+	std::vector<Cluster*> clusters_;
 	std::vector<bool> clustered_;
 };

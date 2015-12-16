@@ -9,8 +9,12 @@ public:
 
 	const std::vector<AgentPosition>& agents() const { return agents_; }
 
-	const AgentPosition& GetAgentByID(long id) const {
-		return agents_by_id_[id];
+	const AgentPosition GetAgentByID(long id) const {
+		if (player_.Id == id) {
+			return AgentPosition(player_.Id, player_.X, player_.Y);
+		} else {
+			return agents_by_id_[id];
+		}
 	}
 
 	// setters

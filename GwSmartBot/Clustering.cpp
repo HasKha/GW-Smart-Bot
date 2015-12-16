@@ -5,7 +5,7 @@
 #include "Utils.h"
 
 bool Cluster::IsInRange(const World& world) const {
-	for (long id : agents_) {
+	for (long id : agents) {
 		if (Utils::GetSquaredDistance(world.player(),
 			world.GetAgentByID(id)) > GwConstants::SqrRange::Compass) {
 			return false;
@@ -34,8 +34,8 @@ void Clustering::ComputeClusters(const World& world) {
 		AgentPosition agent = unclustered.back();
 		unclustered.pop_back();
 
-		Cluster cluster;
-		cluster.Insert(agent.id);
+		Cluster* cluster = new Cluster();
+		cluster->agents.insert(agent.id);
 
 		for (int i = 0; i < 3; ++i) {
 			size_t closest = 0;
@@ -48,25 +48,28 @@ void Clustering::ComputeClusters(const World& world) {
 			}
 			float max_distance = 750;
 			if (closest_distance < max_distance * max_distance) {
-				cluster.Insert(unclustered[closest].id);
+				cluster->agents.insert(unclustered[closest].id);
 				unclustered.erase(unclustered.begin() + closest);
 			}
 		}
-		if (cluster.Size() == 4) {
+		if (cluster->agents.size() == 4) {
 			clusters_.push_back(cluster);
 			printf("created cluster with ");
-			for (long id : cluster) {
+			for (long id : cluster->agents) {
 				printf("%d ", id);
 				clustered_[id] = true;
 			}
 			printf("\n");
+		} else {
+			delete cluster;
 		}
 	}
 
 	// remove clusters that are already on top of the player
 	for (auto it = clusters_.begin(); it != clusters_.end();) {
 		bool remove = false;
-		for (long agentid : (*it)) {
+		Cluster* cluster = *it;
+		for (long agentid : cluster->agents) {
 			if (Utils::GetSquaredDistance(world.player(), 
 					world.GetAgentByID(agentid)) < GwConstants::SqrRange::Earshot) {
 				remove = true;
@@ -76,6 +79,7 @@ void Clustering::ComputeClusters(const World& world) {
 		}
 		if (remove) {
 			printf("Removing cluster\n");
+			delete cluster;
 			it = clusters_.erase(it);
 		} else {
 			++it;
@@ -84,6 +88,9 @@ void Clustering::ComputeClusters(const World& world) {
 }
 
 void Clustering::ClearClusters() {
+	for (Cluster* c : clusters_) {
+		delete c;
+	}
 	clusters_.clear();
 	clustered_ = std::vector<bool>(MAX_AGENTS, false);
 }
@@ -91,9 +98,9 @@ void Clustering::ClearClusters() {
 
 void Clustering::RenderClusters(const World& world) {
 	glColor3f(0.8f, 0, 0);
-	for (const Cluster cluster : clusters_) {
+	for (Cluster* cluster : clusters_) {
 		glBegin(GL_LINE_LOOP);
-		for (long agentid : cluster) {
+		for (long agentid : cluster->agents) {
 			const AgentPosition& ap = world.GetAgentByID(agentid);
 			if (ap.valid()) {
 				glVertex2f(ap.x, ap.y);
