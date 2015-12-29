@@ -25,17 +25,10 @@ public:
 		}
 	}
 
-	void Update(const World& world) override {
-		if (!failed_ && casting_ && world.player().Skill == 0) {
-			printf("warning: not casting %d\n", slot_);
-		}
-	}
-
 	bool Done(const World& world) override {
 		if (failed_) return true;
 		if (casting_) {
 			if (world.player().GetIsDead()) return true;
-			if (failed_) return true;
 			if (!GWCAClient::Api().IsSkillRecharged(slot_)) {
 				casting_ = false;
 				aftercast_start_ = std::clock();

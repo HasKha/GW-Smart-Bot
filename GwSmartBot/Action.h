@@ -5,7 +5,7 @@
 
 class Action {
 public:
-	// perform the initial action, will be called once per action
+	// perform the initial action, will be always called once per action
 	virtual void Perform(const World& world) = 0;
 
 	// resume the action after a pause, a different action, or a sub-action
@@ -15,7 +15,7 @@ public:
 	// check for status, will be called once per loop
 	virtual void Update(const World& world) {};
 
-	// checks if the action is done, should return true when completed
+	// checks if the action is done, must return true when completed
 	virtual bool Done(const World& world) { return true; };
 };
 

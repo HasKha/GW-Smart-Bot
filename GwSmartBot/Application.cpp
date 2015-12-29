@@ -10,11 +10,11 @@ Application::Application() :
 	should_quit_(false),
 	bot_active_(false),
 	viewer_(Viewer()),
-	world_(*new World()),
+	world_(new World()),
 	agent_renderer_(AgentRenderer()),
 	pmap_renderer_(PmapRenderer()),
 	range_renderer_(RangeRenderer()),
-	bot_(*new SmartVaettirBot(world_)) {
+	bot_(new FixedPathBot(*world_)) {
 
 	GWCAClient::Initialize();
 
@@ -58,12 +58,12 @@ Application::Application() :
 	fixed_path_.push_back(Point2f(12518, -17305));
 	fixed_path_.push_back(Point2f(12445, -17327));
 
-	path_planner_.SetDestination(Point2f(8982, -20576));
+	path_planner_.SetFinalDestination(Point2f(8982, -20576));
 }
 
 Application::~Application() {
-	delete &world_;
-	delete &bot_;
+	delete world_;
+	delete bot_;
 	GWCAClient::Destroy();
 }
 
@@ -112,12 +112,12 @@ void Application::Update() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
 	}
 
-	world_.Update();
+	world_->Update();
 
 	static int tau = 1;
 	tau = (tau + 1) % 10;
 	if (tau == 0) {
-		Point2f pos = Point2f(world_.player().X, world_.player().Y);
+		Point2f pos = Point2f(world_->player().X, world_->player().Y);
 		if (pos.x() != 0 || pos.y() != 0) {
 			if (actual_path_.empty() || !(actual_path_.back() == pos)) {
 				actual_path_.push_back(pos);
@@ -127,10 +127,10 @@ void Application::Update() {
 	}
 
 	if (bot_active_) {
-		bot_.Update();
+		bot_->Update();
 	}
 
-	path_planner_.Update(world_);
+	path_planner_.Update(*world_);
 }
 
 void Application::Render() {
@@ -151,11 +151,11 @@ void Application::Render() {
 	}
 	glEnd();
 
-	path_planner_.Render(world_);
+	path_planner_.Render(*world_);
 
-	agent_renderer_.RenderAgents(world_.agents());
-	agent_renderer_.RenderPlayer(world_.player());
-	range_renderer_.Render(world_.player().X, world_.player().Y);
+	agent_renderer_.RenderAgents(world_->agents());
+	agent_renderer_.RenderPlayer(world_->player());
+	range_renderer_.Render(world_->player().X, world_->player().Y);
 	viewer_.RenderEnd();
 }
 
@@ -190,6 +190,7 @@ void Application::HandleKeyDownEvent(SDL_KeyboardEvent e) {
 void Application::HandleKeyUpEvent(SDL_KeyboardEvent e) {
 	if (e.keysym.sym == SDLK_SPACE) {
 		bot_active_ = !bot_active_;
+		printf("bot active %d\n", bot_active_);
 	}
 }
 

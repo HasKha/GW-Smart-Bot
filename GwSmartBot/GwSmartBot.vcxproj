@@ -160,17 +160,21 @@
     <ClCompile Include="PathPlanner.cpp" />
     <ClCompile Include="PmapRenderer.cpp" />
     <ClCompile Include="RangeRenderer.cpp" />
-    <ClCompile Include="SmartVaettirBot.cpp" />
+    <ClCompile Include="FixedPathBot.cpp" />
+    <ClCompile Include="SmartBot.cpp" />
+    <ClCompile Include="VaettirBot.cpp" />
     <ClCompile Include="Viewer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Action.h" />
+    <ClInclude Include="ActionQueue.h" />
     <ClInclude Include="Actions.h" />
     <ClInclude Include="Clustering.h" />
     <ClInclude Include="LogAction.h" />
     <ClInclude Include="AgentRenderer.h" />
     <ClInclude Include="Application.h" />
-    <ClInclude Include="Bot.h" />
+    <ClInclude Include="SmartBot.h" />
+    <ClInclude Include="VaettirBot.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="MoveAction.h" />
     <ClInclude Include="PathingMap.h" />
@@ -178,7 +182,7 @@
     <ClInclude Include="PmapRenderer.h" />
     <ClInclude Include="Point2f.h" />
     <ClInclude Include="RangeRenderer.h" />
-    <ClInclude Include="SmartVaettirBot.h" />
+    <ClInclude Include="FixedPathBot.h" />
     <ClInclude Include="UseSkillAction.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Viewer.h" />

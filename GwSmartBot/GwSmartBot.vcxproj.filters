@@ -28,9 +28,6 @@
     <ClCompile Include="Viewer.cpp">
       <Filter>Viewers</Filter>
     </ClCompile>
-    <ClCompile Include="SmartVaettirBot.cpp">
-      <Filter>BotLogic</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PathingMap.cpp" />
@@ -43,6 +40,15 @@
     <ClCompile Include="PathPlanner.cpp">
       <Filter>PathPlanning</Filter>
     </ClCompile>
+    <ClCompile Include="FixedPathBot.cpp">
+      <Filter>BotLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="VaettirBot.cpp">
+      <Filter>BotLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="SmartBot.cpp">
+      <Filter>BotLogic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Viewer.h">
@@ -53,12 +59,6 @@
     </ClInclude>
     <ClInclude Include="PmapRenderer.h">
       <Filter>Viewers</Filter>
-    </ClInclude>
-    <ClInclude Include="Bot.h">
-      <Filter>BotLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="SmartVaettirBot.h">
-      <Filter>BotLogic</Filter>
     </ClInclude>
     <ClInclude Include="Application.h" />
     <ClInclude Include="PathingMap.h" />
@@ -96,6 +96,18 @@
     </ClInclude>
     <ClInclude Include="PathPlanner.h">
       <Filter>PathPlanning</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedPathBot.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="VaettirBot.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="SmartBot.h">
+      <Filter>BotLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionQueue.h">
+      <Filter>Actions</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

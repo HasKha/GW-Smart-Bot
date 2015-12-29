@@ -31,6 +31,16 @@ void PathPlanner::Render(const World& world) {
 			}
 		}
 		glEnd();
+		glColor3f(0.7f, 0.2f, 1);
+		glPointSize(5.0f);
+		glBegin(GL_POINTS);
+		for (PathNode* pn : path_) {
+			if (pn->valid(world)) {
+				Point2f pos = pn->Pos(world);
+				glVertex2f(pos.x(), pos.y());
+			}
+		}
+		glEnd();
 	}
 }
 
@@ -41,19 +51,26 @@ void PathPlanner::Clear() {
 void PathPlanner::PlanPath(const World& world) {
 	ConstructPath(world);
 	OptimizeAgentInCluster(world);
+	OptimizePosition(world);
 }
 
 std::vector<Cluster*> PathPlanner::GetFilteredClusters(const World& world) {
 	std::vector<Cluster*> filtered;
 	for (Cluster* cluster : clustering.clusters()) {
-		bool valid = true;
+		bool north = false;
+		bool valid = false;
 		for (long id : cluster->agents) {
-			if (world.GetAgentByID(id).y > NORTH_SOUTH_LINE) {
-				valid = false;
-				break;
+			AgentPosition apos = world.GetAgentByID(id);
+			if (apos.valid()) {
+				valid = true;
+				
+				if (apos.y > NORTH_SOUTH_LINE) {
+					north = true;
+					break;
+				}
 			}
 		}
-		if (valid) {
+		if (valid && !north) {
 			filtered.push_back(cluster);
 		}
 	}
@@ -82,7 +99,6 @@ void PathPlanner::ConstructPath(const World& world) {
 void PathPlanner::OptimizeAgentInCluster(const World& world) {
 	// start from 2nd, 1st is player pos and we can't optimize that
 	// end at second last, we can't optimize last since it has no next
-	bool changed = false;
 	for (int j = 0; j < 3; ++j) {
 		for (size_t i = 1; i < path_.size() - 1; ++i) {
 			Cluster* cluster = path_[i]->cluster();
@@ -104,6 +120,41 @@ void PathPlanner::OptimizeAgentInCluster(const World& world) {
 			delete path_[i];
 			path_[i] = new AgentPathNode(best_id, cluster);
 		}
+	}
+}
+
+void PathPlanner::OptimizePosition(const World& world) {
+	for (size_t i = 1; i < path_.size() - 1; ++i) {
+		Point2f prev = path_[i - 1]->Pos(world);
+		Point2f curr = path_[i    ]->Pos(world);
+		Point2f next = path_[i + 1]->Pos(world);
+
+		Point2f to_prev = (prev - curr).normalized();
+		Point2f to_next = (next - curr).normalized();
+		Point2f middle = ((to_prev + to_next) / 2).normalized();
+		Point2f result;
+
+		// http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+		Point2f p = curr;
+		Point2f q = prev;
+		Point2f s = next - prev;
+		Point2f r = middle * static_cast<float>(GwConstants::Range::Earshot);
+		if (cross(r, s) == 0) { // colinear or parallel lines, extremely unlikely
+								// but consider to prevent division by 0
+			result = curr;
+		} else {
+			// lines are not colinear, not parallel, they intersect at p + t r = q + u s
+			// if t < 1 the intersection is inside earshot
+			float t = cross(q - p, s) / cross(r, s);
+			if (t < 1) {
+				result = p + t * r;
+			} else {
+				result = p + 1 * r;
+			}
+		}
+		
+		delete path_[i];
+		path_[i] = new FixedPathNode(result);
 	}
 }
 

@@ -11,7 +11,7 @@
 #include "PmapRenderer.h"
 #include "RangeRenderer.h"
 #include "Viewer.h"
-#include "SmartVaettirBot.h"
+#include "FixedPathBot.h"
 #include "PathPlanner.h"
 
 class Application {
@@ -46,7 +46,7 @@ private:
 
 	bool should_quit_;
 
-	World& world_;
+	World* world_;
 
 	GwConstants::MapID current_map_;
 		
@@ -57,7 +57,7 @@ private:
 	PathPlanner path_planner_;
 
 	bool bot_active_;
-	SmartVaettirBot& bot_;
+	VaettirBot* bot_;
 
 	std::vector<Point2f> fixed_path_;
 	std::vector<Point2f> actual_path_;

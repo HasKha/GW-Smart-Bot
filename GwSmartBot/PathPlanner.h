@@ -63,7 +63,10 @@ public:
 
 	void Clear();
 
-	void SetDestination(const Point2f p) { destination_ = p; }
+	void SetFinalDestination(const Point2f p) { destination_ = p; }
+
+	Point2f GetNextDestination(const World& world) { 
+		return path_[1]->Pos(world); }
 
 private:
 	PathNode* Nearest(const World& world, std::vector<Cluster*> clusters, 
@@ -73,6 +76,11 @@ private:
 	std::vector<Cluster*> GetFilteredClusters(const World& world);
 	void ConstructPath(const World& world);
 	void OptimizeAgentInCluster(const World& world);
+	void OptimizePosition(const World& world);
+
+	float cross(const Point2f v, const Point2f w) {
+		return v.x() * w.y() - v.y() * w.x();
+	}
 
 	Clustering clustering;
 

@@ -12,8 +12,6 @@ int main(int argc, char** argv) {
 
 	app.DebugFunc();
 
-
-
 	while (true) {
 		app.HandleInput();
 		if (app.ShouldQuit()) break;
