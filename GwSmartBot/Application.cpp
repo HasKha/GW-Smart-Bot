@@ -14,7 +14,7 @@ Application::Application() :
 	agent_renderer_(AgentRenderer()),
 	pmap_renderer_(PmapRenderer()),
 	range_renderer_(RangeRenderer()),
-	bot_(new FixedPathBot(*world_)) {
+	bot_(new SmartBot(*world_)) {
 
 	GWCAClient::Initialize();
 
@@ -57,8 +57,6 @@ Application::Application() :
 	fixed_path_.push_back(Point2f(12617, -17273));
 	fixed_path_.push_back(Point2f(12518, -17305));
 	fixed_path_.push_back(Point2f(12445, -17327));
-
-	path_planner_.SetFinalDestination(Point2f(8982, -20576));
 }
 
 Application::~Application() {
@@ -106,7 +104,7 @@ void Application::Update() {
 
 	if (current_map_ != GWCAClient::Api().GetMapID()) {
 		current_map_ = GWCAClient::Api().GetMapID();
-		path_planner_.Clear();
+		bot_->Clear();
 		actual_path_.clear();
 		printf("Zoned to %d, cleaned up things\n", current_map_);
 		std::this_thread::sleep_for(std::chrono::milliseconds(250));
@@ -121,16 +119,13 @@ void Application::Update() {
 		if (pos.x() != 0 || pos.y() != 0) {
 			if (actual_path_.empty() || !(actual_path_.back() == pos)) {
 				actual_path_.push_back(pos);
-				//printf("x %f y %f\n", pos.x(), pos.y());
 			}
 		}
 	}
 
-	if (bot_active_) {
-		bot_->Update();
-	}
-
-	path_planner_.Update(*world_);
+	//if (bot_active_) {
+	bot_->Update(bot_active_);
+	//}
 }
 
 void Application::Render() {
@@ -151,7 +146,7 @@ void Application::Render() {
 	}
 	glEnd();
 
-	path_planner_.Render(*world_);
+	bot_->Render();
 
 	agent_renderer_.RenderAgents(world_->agents());
 	agent_renderer_.RenderPlayer(world_->player());

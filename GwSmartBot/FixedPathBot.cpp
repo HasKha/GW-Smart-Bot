@@ -36,7 +36,7 @@ FixedPathBot::FixedPathBot(const World& world) :
 	action_queue_.Append(new MoveAction(8982, -20576));
 
 	action_queue_.Append(new LogAction("Waiting for left ball"));
-	action_queue_.Append(new WaitAction(12 * 1000));
+	action_queue_.Append(new WaitAction(14 * 1000));
 	action_queue_.Append(new UseSkillAction(SkillSlot::HoS, Target::Current));
 	action_queue_.Append(new WaitAction(6 * 1000));
 
@@ -72,7 +72,7 @@ FixedPathBot::FixedPathBot(const World& world) :
 	action_queue_.Append(new LogAction("Please take over, and kill them all"));
 }
 
-void FixedPathBot::Update() {
+void FixedPathBot::Update(bool do_actions) {
 	if (world_.player().Id == 0) return;
 	if (GWCAClient::Api().GetInstancType() != GwConstants::InstanceType::Explorable) return;
 	if (GWCAClient::Api().GetMapID() != GwConstants::MapID::Jaga_Moraine) return;
@@ -90,45 +90,4 @@ void FixedPathBot::Update() {
 
 		action_queue_.Update(world_);
 	}
-
-	//if (!cast_queue_.empty()) {
-	//	if (current_cast_ == nullptr) {
-	//		current_cast_ = cast_queue_.front();
-	//		current_cast_->Perform(world_);
-	//	} else {
-	//		current_cast_->Update(world_);
-	//	}
-
-	//	if (current_cast_->Done(world_)) {
-	//		cast_queue_.pop();
-	//		delete current_cast_;
-	//		current_cast_ = nullptr;
-	//	}
-	//	
-	//	resume = true;
-	//} else {
-	//	UpdateCounts();
-
-	//	StayAlive();
-	//	
-	//	if (doactions && !action_queue_.empty()) {
-	//		if (current_action_ == nullptr) {
-	//			current_action_ = action_queue_.front();
-	//			current_action_->Perform(world_);
-	//			resume = false;
-	//		} else if (resume) {
-	//			printf("resume action\n");
-	//			current_action_->Resume(world_);
-	//			resume = false;
-	//		} else {
-	//			current_action_->Update(world_);
-	//		}
-
-	//		if (current_action_->Done(world_)) {
-	//			action_queue_.pop();
-	//			delete current_action_;
-	//			current_action_ = nullptr;
-	//		}
-	//	}
-	//}
 }

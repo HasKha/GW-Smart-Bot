@@ -2,22 +2,24 @@
 
 #include <GWCACppClient\GWCAClient.h>
 #include <vector>
+#include <functional>
 
 #include "Clustering.h"
 #include "Point2f.h"
 
 class PathNode {
-public:
+protected:
 	PathNode() : cluster_(nullptr) {}
-	PathNode(Cluster* cluster) : cluster_(cluster) {}
+	PathNode(const Cluster* cluster) : cluster_(cluster) {}
 
+public:
 	virtual Point2f Pos(const World& world) = 0;
 	virtual bool valid(const World& world) = 0;
 
-	Cluster* cluster() { return cluster_; }
+	const Cluster* cluster() { return cluster_; }
 
 private:
-	Cluster* cluster_;
+	const Cluster* cluster_;
 };
 
 class FixedPathNode : public PathNode {
@@ -40,7 +42,8 @@ public:
 
 class AgentPathNode : public PathNode {
 public:
-	AgentPathNode(long id, Cluster* cluster) : agentid(id), PathNode(cluster) {}
+	AgentPathNode(long id, const Cluster* cluster) : 
+		agentid(id), PathNode(cluster) {}
 	Point2f Pos(const World& world) override {
 		AgentPosition pos = world.GetAgentByID(agentid);
 		return Point2f(pos.x, pos.y);
@@ -55,17 +58,25 @@ private:
 };
 
 class PathPlanner {
-	static const int NORTH_SOUTH_LINE = -19930;
+	const float TARGET_DISTANCE = 900.0f;
 public:
+	PathPlanner() :
+		validator_([](AgentPosition) { return true; }),
+		destination_(0, 0) {}
+
 	void Update(const World& world);
 
-	void Render(const World& world);
+	void Render(const World& world) const;
 
 	void Clear();
 
 	void SetFinalDestination(const Point2f p) { destination_ = p; }
+	void SetValidatorFunc(std::function<bool(AgentPosition apos)> f) {
+		validator_ = f;
+	}
 
-	Point2f GetNextDestination(const World& world) { 
+	Point2f GetFinalDestination() const { return destination_; }
+	Point2f GetNextDestination(const World& world) const { 
 		return path_[1]->Pos(world); }
 
 private:
@@ -78,12 +89,14 @@ private:
 	void OptimizeAgentInCluster(const World& world);
 	void OptimizePosition(const World& world);
 
-	float cross(const Point2f v, const Point2f w) {
+	float cross(const Point2f v, const Point2f w) const {
 		return v.x() * w.y() - v.y() * w.x();
 	}
 
 	Clustering clustering;
 
 	Point2f destination_;
+	std::function<bool(AgentPosition apos)> validator_;
+
 	std::vector<PathNode*> path_;
 };

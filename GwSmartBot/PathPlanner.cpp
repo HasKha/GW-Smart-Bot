@@ -18,7 +18,7 @@ void PathPlanner::Update(const World& world) {
 	PlanPath(world);
 }
 
-void PathPlanner::Render(const World& world) {
+void PathPlanner::Render(const World& world) const {
 	clustering.RenderClusters(world);
 
 	if (!path_.empty()) {
@@ -57,20 +57,20 @@ void PathPlanner::PlanPath(const World& world) {
 std::vector<Cluster*> PathPlanner::GetFilteredClusters(const World& world) {
 	std::vector<Cluster*> filtered;
 	for (Cluster* cluster : clustering.clusters()) {
-		bool north = false;
+		//bool north = false;
 		bool valid = false;
 		for (long id : cluster->agents) {
 			AgentPosition apos = world.GetAgentByID(id);
-			if (apos.valid()) {
+			if (apos.valid() && validator_(apos)) {
 				valid = true;
-				
-				if (apos.y > NORTH_SOUTH_LINE) {
-					north = true;
-					break;
-				}
+				//
+				//if (apos.y > NORTH_SOUTH_LINE) {
+				//	north = true;
+				//	break;
+				//}
 			}
 		}
-		if (valid && !north) {
+		if (valid /*&& !north*/) {
 			filtered.push_back(cluster);
 		}
 	}
@@ -101,7 +101,7 @@ void PathPlanner::OptimizeAgentInCluster(const World& world) {
 	// end at second last, we can't optimize last since it has no next
 	for (int j = 0; j < 3; ++j) {
 		for (size_t i = 1; i < path_.size() - 1; ++i) {
-			Cluster* cluster = path_[i]->cluster();
+			const Cluster* cluster = path_[i]->cluster();
 			Point2f prev = path_[i - 1]->Pos(world);
 			Point2f next = path_[i + 1]->Pos(world);
 			float best_dist = -1;
@@ -138,7 +138,7 @@ void PathPlanner::OptimizePosition(const World& world) {
 		Point2f p = curr;
 		Point2f q = prev;
 		Point2f s = next - prev;
-		Point2f r = middle * static_cast<float>(GwConstants::Range::Earshot);
+		Point2f r = middle * TARGET_DISTANCE;
 		if (cross(r, s) == 0) { // colinear or parallel lines, extremely unlikely
 								// but consider to prevent division by 0
 			result = curr;

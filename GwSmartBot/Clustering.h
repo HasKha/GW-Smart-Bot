@@ -20,11 +20,11 @@ public:
 
 	void ComputeClusters(const World& world);
 
-	void RenderClusters(const World& world);
+	void RenderClusters(const World& world) const;
 
 	void ClearClusters();
 
-	const std::vector<Cluster*>& clusters() { return clusters_; }
+	const std::vector<Cluster*>& clusters() const { return clusters_; }
 
 private:
 	std::vector<Cluster*> clusters_;

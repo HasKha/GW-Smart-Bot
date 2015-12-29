@@ -13,12 +13,18 @@ public:
 	VaettirBot(const World& world) :
 		world_(world) {}
 
-	virtual void Update() = 0;
+	// will be called at every iteration
+	virtual void Update(bool do_actions) = 0;
+
+	// render if needed
+	virtual void Render() = 0;
+
+	// will be called on map change or reset
+	virtual void Clear() = 0;
 
 protected:
 	GWCAClient& gwca() { return GWCAClient::Api(); }
 
-	void CastIfNeeded();
 	void UpdateCounts();
 	void StayAlive();
 	
@@ -32,8 +38,8 @@ protected:
 	int area_count_;
 	int adjacent_count_;
 
-	//UseSkillAction* current_cast_;
-	//std::queue<UseSkillAction*> cast_queue_;
 	ActionQueue cast_queue_;
+	ActionQueue action_queue_;
+
 	const World& world_;
 };

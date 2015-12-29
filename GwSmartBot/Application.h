@@ -11,7 +11,7 @@
 #include "PmapRenderer.h"
 #include "RangeRenderer.h"
 #include "Viewer.h"
-#include "FixedPathBot.h"
+#include "SmartBot.h"
 #include "PathPlanner.h"
 
 class Application {
@@ -54,7 +54,6 @@ private:
 	AgentRenderer agent_renderer_;
 	PmapRenderer pmap_renderer_;
 	RangeRenderer range_renderer_;
-	PathPlanner path_planner_;
 
 	bool bot_active_;
 	VaettirBot* bot_;

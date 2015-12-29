@@ -96,7 +96,7 @@ void Clustering::ClearClusters() {
 }
 
 
-void Clustering::RenderClusters(const World& world) {
+void Clustering::RenderClusters(const World& world) const {
 	glColor3f(0.8f, 0, 0);
 	for (Cluster* cluster : clusters_) {
 		glBegin(GL_LINE_LOOP);
