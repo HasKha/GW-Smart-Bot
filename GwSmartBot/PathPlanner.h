@@ -34,7 +34,7 @@ private:
 class PlayerPathNode : public PathNode {
 public:
 	Point2f Pos(const World& world) override {
-		GWAPI::GW::GamePos pos = world.player().pos;
+		GWCA::GW::GamePos pos = world.player().pos;
 		return Point2f(pos.x, pos.y);
 	}
 	bool valid(const World&) override { return true; }
