@@ -54,12 +54,9 @@ void Clustering::ComputeClusters(const World& world) {
 		}
 		if (cluster->agents.size() == 4) {
 			clusters_.push_back(cluster);
-			printf("created cluster with ");
 			for (long id : cluster->agents) {
-				printf("%d ", id);
 				clustered_[id] = true;
 			}
-			printf("\n");
 		} else {
 			delete cluster;
 		}
@@ -73,12 +70,10 @@ void Clustering::ComputeClusters(const World& world) {
 			if (Utils::GetSquaredDistance(world.player(), 
 					world.GetAgentByID(agentid)) < GwConstants::SqrRange::Earshot) {
 				remove = true;
-				printf("in range to remove\n");
 				break;
 			}
 		}
 		if (remove) {
-			printf("Removing cluster\n");
 			delete cluster;
 			it = clusters_.erase(it);
 		} else {

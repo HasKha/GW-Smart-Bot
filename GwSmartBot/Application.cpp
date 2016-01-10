@@ -11,18 +11,28 @@ Application::Application() :
 	bot_active_(false),
 	viewer_(Viewer()),
 	world_(new World()),
+	map_hash_(290943),
+	pmap_(map_hash_),
 	agent_renderer_(AgentRenderer()),
 	pmap_renderer_(PmapRenderer()),
 	range_renderer_(RangeRenderer()),
-	bot_(new SmartBot(*world_)) {
+	bot_(new SmartBot(*world_, pmap_)) {
+
+	TCHAR file_name[MAX_PATH];
+	wsprintf(file_name, L"PMAPs\\MAP %010u.pmap", map_hash_);
+	bool loaded = pmap_.Open(file_name);
+	if (loaded) {
+		printf("loaded pmap %d, %d trapezoids\n", map_hash_, pmap_.GetPathingData().size());
+	} else {
+		printf("failed to load pmap!\n");
+	}
 
 	GWCAClient::Initialize();
 
 	viewer_.InitializeWindow();
 	range_renderer_.Initialize();
 	
-	//pmap_renderer_.Initialize(127484); // warrior's isle
-	pmap_renderer_.Initialize(290943); // jaga moraine
+	pmap_renderer_.Initialize(pmap_);
 
 	fixed_path_.push_back(Point2f(13501, -20925));
 	fixed_path_.push_back(Point2f(13172, -22137));
@@ -112,6 +122,13 @@ void Application::Update() {
 
 	world_->Update();
 
+	if (GetAsyncKeyState(VK_END) & 1) {
+		bot_->Report(*world_);
+	}
+	if (GetAsyncKeyState(VK_HOME) & 1) {
+		bot_active_ = !bot_active_;
+	}
+
 	static int tau = 1;
 	tau = (tau + 1) % 10;
 	if (tau == 0) {
@@ -121,6 +138,7 @@ void Application::Update() {
 				actual_path_.push_back(pos);
 			}
 		}
+		//printf("x %f, y %f\n", pos.x(), pos.y());
 	}
 
 	//if (bot_active_) {

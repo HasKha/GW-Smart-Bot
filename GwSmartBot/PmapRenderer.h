@@ -8,7 +8,7 @@ class PmapRenderer {
 public:
 	PmapRenderer() {}
 
-	bool Initialize(unsigned int map_hash);
+	bool Initialize(PathingMap& pmap);
 
 	void Render();
 

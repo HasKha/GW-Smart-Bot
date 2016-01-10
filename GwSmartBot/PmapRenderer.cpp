@@ -19,18 +19,7 @@ void PmapRenderer::Render() {
 	glEnd();
 }
 
-bool PmapRenderer::Initialize(unsigned int map_hash) {
-	TCHAR file_name[MAX_PATH];
-	wsprintf(file_name, L"PMAPs\\MAP %010u.pmap", map_hash);
-	PathingMap pmap(map_hash);
-	bool loaded = pmap.Open(file_name);
-	if (loaded) {
-		printf("loaded pmap %d, %d trapezoids\n", map_hash, pmap.GetPathingData().size());
-		trapezoids_ = pmap.GetPathingData();
-		return true;
-	} else {
-		printf("failed to load pmap!\n");
-		trapezoids_.clear();
-		return false;
-	}
+bool PmapRenderer::Initialize(PathingMap& pmap) {
+	trapezoids_ = pmap.GetPathingData();
+	return true;
 }

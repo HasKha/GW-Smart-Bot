@@ -56,8 +56,8 @@ private:
 	std::clock_t last_moved_;
 };
 
-SmartBot::SmartBot(const World& world)
-	: VaettirBot(world) {
+SmartBot::SmartBot(const World& world, PathingMap& pmap)
+	: VaettirBot(world), path_planner_(pmap) {
 
 	const int NORTH_SOUTH_LINE = -19930;
 
@@ -70,6 +70,7 @@ SmartBot::SmartBot(const World& world)
 	}));
 	action_queue_.Append(new MoveAction(13501, -20925));
 	action_queue_.Append(new MoveAction(13172, -22137));
+	action_queue_.Append(new MoveAction(12496, -22600));
 	action_queue_.Append(new CustomSimpleAction([](const World& world) {
 		float closest_dist = GwConstants::SqrRange::Compass;
 		DWORD closest_id = Target::Self;
@@ -84,23 +85,28 @@ SmartBot::SmartBot(const World& world)
 	action_queue_.Append(new PlannedMoveAction(path_planner_));
 
 	action_queue_.Append(new LogAction("Waiting for left ball"));
-	action_queue_.Append(new WaitAction(14 * 1000));
+	action_queue_.Append(new UseSkillAction(SkillSlot::Channeling, Target::Self));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(2 * 1000));
 	action_queue_.Append(new UseSkillAction(SkillSlot::HoS, Target::Current));
-	action_queue_.Append(new WaitAction(6 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(1 * 1000));
 
 	action_queue_.Append(new LogAction("Doing right side"));
 	action_queue_.Append(new CustomSimpleAction([NORTH_SOUTH_LINE, this](const World&) {
 		path_planner_.SetFinalDestination(Point2f(12476, -16157));
 		path_planner_.SetValidatorFunc([NORTH_SOUTH_LINE](AgentPosition apos) {
-			return apos.y > NORTH_SOUTH_LINE;
+			return apos.y > NORTH_SOUTH_LINE && apos.y < -13116;
 		});
 	}));
 	action_queue_.Append(new PlannedMoveAction(path_planner_));
 
 	action_queue_.Append(new LogAction("Waiting for right ball"));
-	action_queue_.Append(new WaitAction(15 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(2 * 1000));
 	action_queue_.Append(new UseSkillAction(SkillSlot::HoS, Target::Current));
-	action_queue_.Append(new WaitAction(5 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(1 * 1000));
 
 	action_queue_.Append(new LogAction("Blocking enemies"));
 	action_queue_.Append(new MoveAction(12920, -17032, 30));
@@ -114,6 +120,10 @@ SmartBot::SmartBot(const World& world)
 	action_queue_.Append(new MoveAction(12445, -17327, 10));
 
 	action_queue_.Append(new LogAction("Please take over, and kill them all"));
+
+	action_queue_.Append(new CustomSimpleAction([this](const World& w) {
+		Report(w);
+	}));
 }
 
 void SmartBot::Update(bool do_actions) {

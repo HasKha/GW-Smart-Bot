@@ -2,10 +2,11 @@
 
 #include "VaettirBot.h"
 #include "PathPlanner.h"
+#include "PathingMap.h"
 
 class SmartBot : public VaettirBot {
 public:
-	SmartBot(const World& world);
+	SmartBot(const World& world, PathingMap& pmap);
 
 	void Update(bool do_actions) override;
 

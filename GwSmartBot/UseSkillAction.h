@@ -19,9 +19,7 @@ public:
 			failed_ = true;
 			printf("failed casting %d\n", slot_);
 		} else {
-			printf("casting %d\n", slot_);
 			GWCAClient::Api().UseSkill(slot_, target_, false);
-			printf("send cast command for %d\n", slot_);
 		}
 	}
 

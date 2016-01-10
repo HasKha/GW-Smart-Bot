@@ -67,6 +67,14 @@ struct PathingMapTrapezoid
 	float XTR;
 	float XBL;
 	float XBR;
+
+	bool Contains(float x, float y) {
+		if (y > YT) return false;
+		if (y < YB) return false;
+		if (x > (XTR + XBR) / 2) return false;
+		if (x < (XTL + XBL) / 2) return false;
+		return true;
+	}
 };
 
 #pragma pack(1)
@@ -131,6 +139,14 @@ public:
 		GWTransitions[index] = t;
 	}
 	bool Save(TCHAR* filename);
+
+	bool Contains(float x, float y) {
+		for (PathingMapTrapezoid trap : PathingData) {
+			if (trap.Contains(x, y)) return true;
+		}
+		return false;
+	}
+
 private:
 	Bounds GetBoundaries();
 	void CompileAdjacentList();

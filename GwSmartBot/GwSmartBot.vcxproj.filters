@@ -109,5 +109,8 @@
     <ClInclude Include="ActionQueue.h">
       <Filter>Actions</Filter>
     </ClInclude>
+    <ClInclude Include="WaitForBallAction.h">
+      <Filter>Actions</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

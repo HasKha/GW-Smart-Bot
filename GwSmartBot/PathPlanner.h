@@ -6,6 +6,7 @@
 
 #include "Clustering.h"
 #include "Point2f.h"
+#include "PathingMap.h"
 
 class PathNode {
 protected:
@@ -60,9 +61,10 @@ private:
 class PathPlanner {
 	const float TARGET_DISTANCE = 900.0f;
 public:
-	PathPlanner() :
+	PathPlanner(PathingMap& pmap) :
 		validator_([](AgentPosition) { return true; }),
-		destination_(0, 0) {}
+		destination_(0, 0),
+		pmap_(pmap) {}
 
 	void Update(const World& world);
 
@@ -92,6 +94,8 @@ private:
 	float cross(const Point2f v, const Point2f w) const {
 		return v.x() * w.y() - v.y() * w.x();
 	}
+
+	PathingMap& pmap_;
 
 	Clustering clustering;
 

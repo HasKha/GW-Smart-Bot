@@ -5,3 +5,4 @@
 #include "MoveAction.h"
 #include "UseSkillAction.h"
 #include "WaitAction.h"
+#include "WaitForBallAction.h"

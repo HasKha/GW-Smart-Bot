@@ -152,9 +152,11 @@ void PathPlanner::OptimizePosition(const World& world) {
 				result = p + 1 * r;
 			}
 		}
-		
-		delete path_[i];
-		path_[i] = new FixedPathNode(result);
+
+		if (pmap_.Contains(result.x(), result.y())) {
+			delete path_[i];
+			path_[i] = new FixedPathNode(result);
+		}
 	}
 }
 

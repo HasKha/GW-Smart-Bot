@@ -55,6 +55,9 @@ private:
 	PmapRenderer pmap_renderer_;
 	RangeRenderer range_renderer_;
 
+	long map_hash_;
+	PathingMap pmap_;
+
 	bool bot_active_;
 	VaettirBot* bot_;
 

@@ -22,6 +22,22 @@ public:
 	// will be called on map change or reset
 	virtual void Clear() = 0;
 
+	void Report(const World& w) {
+		DWORD time = GWCAClient::Api().GetInstanceTime();
+		long seconds = time / 1000;
+		long minutes = seconds / 60;
+		printf("=== Run Done ===\n");
+		printf("it took %d:%d (%d s)\n", minutes, seconds % 60, seconds);
+
+		int count = 0;
+		for (const AgentPosition& agent : w.agents()) {
+			if (Utils::GetDistance(w.player(), agent) < 900) {
+				++count;
+			}
+		}
+		printf("grouped %d agents, missing %d from 60\n", count, 60 - count);
+	}
+
 protected:
 	GWCAClient& gwca() { return GWCAClient::Api(); }
 
