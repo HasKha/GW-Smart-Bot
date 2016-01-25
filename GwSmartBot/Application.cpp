@@ -16,7 +16,7 @@ Application::Application() :
 	agent_renderer_(AgentRenderer()),
 	pmap_renderer_(PmapRenderer()),
 	range_renderer_(RangeRenderer()),
-	bot_(new SmartBot(*world_, pmap_)) {
+	bot_(new FixedPathBot(*world_/*, pmap_*/)) {
 
 	TCHAR file_name[MAX_PATH];
 	wsprintf(file_name, L"PMAPs\\MAP %010u.pmap", map_hash_);
@@ -151,12 +151,12 @@ void Application::Render() {
 	viewer_.RenderBegin();
 	pmap_renderer_.Render();
 	
-	//glColor3f(1, 0, 0);
-	//glBegin(GL_LINE_STRIP);
-	//for (Point2f p : fixed_path_) {
-	//	glVertex2f(p.x(), p.y());
-	//}
-	//glEnd();
+	glColor3f(1, 0, 0);
+	glBegin(GL_LINE_STRIP);
+	for (Point2f p : fixed_path_) {
+		glVertex2f(p.x(), p.y());
+	}
+	glEnd();
 	glColor3f(0, 1, 0);
 	glBegin(GL_LINE_STRIP);
 	for (Point2f p : actual_path_) {

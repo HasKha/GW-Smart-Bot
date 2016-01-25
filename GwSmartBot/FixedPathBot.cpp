@@ -36,9 +36,12 @@ FixedPathBot::FixedPathBot(const World& world) :
 	action_queue_.Append(new MoveAction(8982, -20576));
 
 	action_queue_.Append(new LogAction("Waiting for left ball"));
-	action_queue_.Append(new WaitAction(14 * 1000));
+	action_queue_.Append(new UseSkillAction(SkillSlot::Channeling, Target::Self));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(2 * 1000));
 	action_queue_.Append(new UseSkillAction(SkillSlot::HoS, Target::Current));
-	action_queue_.Append(new WaitAction(6 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(1 * 1000));
 
 	action_queue_.Append(new LogAction("Doing right side"));
 	action_queue_.Append(new MoveAction(10196, -20124));
@@ -54,9 +57,11 @@ FixedPathBot::FixedPathBot(const World& world) :
 	action_queue_.Append(new MoveAction(12476, -16157));
 
 	action_queue_.Append(new LogAction("Waiting for right ball"));
-	action_queue_.Append(new WaitAction(15 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(2 * 1000));
 	action_queue_.Append(new UseSkillAction(SkillSlot::HoS, Target::Current));
-	action_queue_.Append(new WaitAction(5 * 1000));
+	action_queue_.Append(new WaitForBallAction());
+	action_queue_.Append(new WaitAction(1 * 1000));
 
 	action_queue_.Append(new LogAction("Blocking enemies"));
 	action_queue_.Append(new MoveAction(12920, -17032, 30));
@@ -70,6 +75,10 @@ FixedPathBot::FixedPathBot(const World& world) :
 	action_queue_.Append(new MoveAction(12445, -17327, 10));
 
 	action_queue_.Append(new LogAction("Please take over, and kill them all"));
+
+	action_queue_.Append(new CustomSimpleAction([this](const World& w) {
+		Report(w);
+	}));
 }
 
 void FixedPathBot::Update(bool do_actions) {

@@ -13,13 +13,18 @@ public:
 		UseSkillAction(slot, target, 0) {}
 
 	void Perform(const World& world) override {
-		if (world.player().GetIsDead()
-			|| !GWCAClient::Api().IsSkillRecharged(slot_)
-			|| world.player().GetEnergy() < cost_) {
+		if (world.player().GetIsDead()) {
+			printf("cannot cast %d, I'm dead\n", slot_);
 			failed_ = true;
-			printf("failed casting %d\n", slot_);
+		} else if (!GWCAClient::Api().IsSkillRecharged(slot_)) {
+			printf("cannot cast %d, it's not recharged\n", slot_);
+			failed_ = true;
+		} else if (world.player().GetEnergy() < cost_) {
+			printf("cannot cast %d, no energy for it\n", slot_);
+			failed_ = true;
 		} else {
 			GWCAClient::Api().UseSkill(slot_, target_, false);
+			failed_ = false;
 		}
 	}
 

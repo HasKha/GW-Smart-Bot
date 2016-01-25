@@ -12,6 +12,7 @@
 #include "RangeRenderer.h"
 #include "Viewer.h"
 #include "SmartBot.h"
+#include "FixedPathBot.h"
 #include "PathPlanner.h"
 
 class Application {

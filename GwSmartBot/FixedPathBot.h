@@ -13,5 +13,9 @@ public:
 	
 	void Update(bool do_actions) override;
 
+	void Render() override {}
+
+	void Clear() override {}
+
 private:
 };
